@@ -18,7 +18,9 @@ export type PenggunaAktif = {
  */
 const MENU: { href: string; label: string; peran?: NamaPeran[] }[] = [
   { href: "/dashboard", label: "Dasbor" },
+  { href: "/jual", label: "Jual" },
   { href: "/barang", label: "Data Barang" },
+  { href: "/penerimaan", label: "Penerimaan", peran: [PERAN.PEMILIK, PERAN.PENERUS_USAHA] },
   { href: "/log", label: "Riwayat Aktivitas", peran: [PERAN.PEMILIK] },
 ];
 

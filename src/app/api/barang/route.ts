@@ -1,5 +1,5 @@
 import { type NextRequest, connection } from "next/server";
-import { asc, eq, ilike, or, sql } from "drizzle-orm";
+import { type SQL, and, asc, eq, ilike, or, sql } from "drizzle-orm";
 import { butuhSesi } from "@/lib/auth/rbac";
 import { PERAN } from "@/lib/auth/peran";
 import { barang, liniUsaha } from "@/lib/db/schema";
@@ -18,13 +18,16 @@ export async function GET(req: NextRequest) {
     const db = butuhDb();
 
     const q = req.nextUrl.searchParams.get("q")?.trim() ?? "";
+    const hanyaFavorit = req.nextUrl.searchParams.get("favorit") === "1";
     const limitDiminta = Number(req.nextUrl.searchParams.get("limit") ?? 50);
     const limit = Number.isFinite(limitDiminta) ? Math.min(Math.max(limitDiminta, 1), 200) : 50;
 
     const pola = `%${q}%`;
-    const kondisi = q
-      ? or(ilike(barang.namaBarang, pola), ilike(barang.kodeBarcode, pola))
-      : undefined;
+    const syarat: (SQL | undefined)[] = [];
+    if (q) syarat.push(or(ilike(barang.namaBarang, pola), ilike(barang.kodeBarcode, pola)));
+    // Jalur "Favorit" di layar Jual (F03) memakai penyaring ini.
+    if (hanyaFavorit) syarat.push(eq(barang.favorit, true));
+    const kondisi = syarat.length > 0 ? and(...syarat) : undefined;
 
     const daftar = await db
       .select({

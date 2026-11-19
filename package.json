@@ -12,6 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@zxing/browser": "^0.2.1",
     "bcryptjs": "^3.0.3",
     "dexie": "^4.4.7",
     "drizzle-orm": "^0.45.4",

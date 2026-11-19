@@ -10,9 +10,20 @@ type Kartu = { href: string; judul: string; keterangan: string; peran?: NamaPera
 
 const KARTU: Kartu[] = [
   {
+    href: "/jual",
+    judul: "Jual",
+    keterangan: "Catat penjualan: pindai barcode, favorit, atau harga manual.",
+  },
+  {
     href: "/barang",
     judul: "Data Barang",
     keterangan: "Cari barang, lihat stok, dan harga jual.",
+  },
+  {
+    href: "/penerimaan",
+    judul: "Penerimaan Barang",
+    keterangan: "Catat barang masuk: tunai, kredit, atau titipan.",
+    peran: [PERAN.PEMILIK, PERAN.PENERUS_USAHA],
   },
   {
     href: "/barang?ubah=1",
