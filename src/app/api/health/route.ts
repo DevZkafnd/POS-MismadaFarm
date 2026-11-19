@@ -1,4 +1,5 @@
 import { sql } from "drizzle-orm";
+import { connection } from "next/server";
 import { getDb } from "@/lib/db";
 
 /**
@@ -9,6 +10,7 @@ import { getDb } from "@/lib/db";
  * - 503 `{ status: "error", ... }`                    : basis data tidak terjangkau.
  */
 export async function GET() {
+  await connection();
   const db = getDb();
 
   if (!db) {

@@ -337,7 +337,8 @@ CREATE TABLE log_aktivitas (
     id_pengguna  BIGINT NOT NULL REFERENCES pengguna(id_pengguna),
     aksi         TEXT   NOT NULL,
     objek        TEXT   NOT NULL,
-    waktu        TIMESTAMPTZ NOT NULL DEFAULT now()
+    waktu        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    detail       TEXT
 );
 CREATE INDEX ix_log_pengguna_waktu ON log_aktivitas (id_pengguna, waktu DESC);
 CREATE INDEX ix_log_waktu          ON log_aktivitas (waktu DESC);

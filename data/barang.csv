@@ -1,0 +1,122 @@
+kode_barcode,nama_barang,lini,tipe,satuan,harga_jual_aktif,harga_beli_terakhir,stok_minimum,stok_awal,favorit,cepat_rusak
+8991000000001,Beras Premium Setra Ramos 5 kg,kelontong,barang,karung,68000,61000,3,40,ya,tidak
+8991000000002,Beras Medium 10 kg,kelontong,barang,karung,115000,103000,2,25,tidak,tidak
+8991000000003,Gula Pasir 1 kg,kelontong,barang,kg,16000,14500,5,60,ya,tidak
+8991000000004,Gula Pasir 5 kg,kelontong,barang,karung,78000,71000,2,15,tidak,tidak
+8991000000005,Minyak Goreng Kemasan 2 L,kelontong,barang,pcs,38000,34500,6,48,ya,tidak
+8991000000006,Minyak Goreng Kemasan 1 L,kelontong,barang,pcs,20000,18000,6,55,tidak,tidak
+8991000000007,Minyak Goreng Curah 1 kg,kelontong,barang,kg,17000,15500,5,30,tidak,tidak
+8991000000008,Mie Instan Goreng,kelontong,barang,pcs,3500,2900,20,300,ya,tidak
+8991000000009,Mie Instan Kuah,kelontong,barang,pcs,3400,2800,20,280,tidak,tidak
+8991000000010,Mie Instan Goreng 1 Dus,kelontong,barang,dos,78000,69000,2,12,tidak,tidak
+8991000000011,Telur Ayam Ras 1 kg,kelontong,barang,kg,29000,26500,4,30,ya,ya
+8991000000012,Telur Ayam Kampung 1 kg,kelontong,barang,kg,52000,47000,2,10,tidak,ya
+8991000000013,Kopi Sachet 1 Renteng,kelontong,barang,renteng,12000,10000,5,40,ya,tidak
+8991000000014,Kopi Sachet 1 Bungkus,kelontong,barang,bungkus,1500,1100,20,150,tidak,tidak
+8991000000015,Teh Celup 25 Kantong,kelontong,barang,dos,11000,9000,4,30,tidak,tidak
+8991000000016,Teh Celup Sachet 1 Bungkus,kelontong,barang,bungkus,1000,700,20,200,tidak,tidak
+8991000000017,Susu Kental Manis Kaleng,kelontong,barang,kaleng,13000,11500,5,36,ya,tidak
+8991000000018,Susu Bubuk Sachet 1 Bungkus,kelontong,barang,bungkus,2500,2000,10,120,tidak,tidak
+8991000000019,Sabun Mandi Batang,kelontong,barang,pcs,4500,3800,10,80,tidak,tidak
+8991000000020,Sabun Cair 450 ml,kelontong,barang,botol,24000,21000,4,24,tidak,tidak
+8991000000021,Sampo Sachet 1 Bungkus,kelontong,barang,bungkus,1000,700,20,200,ya,tidak
+8991000000022,Sampo Botol 170 ml,kelontong,barang,botol,26000,23000,3,18,tidak,tidak
+8991000000023,Pasta Gigi 190 gram,kelontong,barang,pcs,15000,13000,4,30,tidak,tidak
+8991000000024,Deterjen Bubuk 800 gram,kelontong,barang,bungkus,22000,19000,4,26,tidak,tidak
+8991000000025,Deterjen Sachet 1 Bungkus,kelontong,barang,bungkus,2000,1500,20,180,ya,tidak
+8991000000026,Sabun Cuci Batang,kelontong,barang,pcs,3000,2400,10,70,tidak,tidak
+8991000000027,Garam Halus 250 gram,kelontong,barang,bungkus,3000,2200,10,60,tidak,tidak
+8991000000028,Penyedap Rasa Sachet,kelontong,barang,bungkus,500,300,50,400,tidak,tidak
+8991000000029,Kecap Manis 135 ml,kelontong,barang,botol,7000,5800,6,36,tidak,tidak
+8991000000030,Saus Sambal 135 ml,kelontong,barang,botol,8000,6500,6,30,tidak,tidak
+8991000000031,Bumbu Nasi Goreng Sachet,kelontong,barang,bungkus,3000,2300,10,80,tidak,tidak
+8991000000032,Kerupuk Kaleng 200 gram,kelontong,barang,kaleng,12000,10000,4,25,tidak,tidak
+8991000000033,Wafer Cokelat,kelontong,barang,pcs,2500,1900,20,100,ya,tidak
+8991000000034,Biskuit Kaleng 650 gram,kelontong,barang,kaleng,45000,39000,2,14,tidak,tidak
+8991000000035,Permen Mint 1 Bungkus,kelontong,barang,bungkus,5000,4000,10,50,tidak,tidak
+8991000000036,Air Mineral 600 ml,kelontong,barang,botol,4000,3000,24,200,ya,tidak
+8991000000037,Air Mineral 1 Dus,kelontong,barang,dos,46000,38000,3,20,tidak,tidak
+8991000000038,Air Mineral Galon Isi Ulang,kelontong,barang,pcs,20000,17000,5,25,ya,tidak
+8991000000039,Teh Kotak 300 ml,kelontong,barang,pcs,5000,4000,12,60,tidak,tidak
+8991000000040,Susu UHT 1 Liter,kelontong,barang,pcs,20000,17500,6,30,tidak,ya
+8991000000041,Minuman Serbuk Sachet,kelontong,barang,bungkus,2000,1500,20,160,tidak,tidak
+8991000000042,Tepung Terigu 1 kg,kelontong,barang,kg,12000,10500,5,45,tidak,tidak
+8991000000043,Tepung Beras 500 gram,kelontong,barang,bungkus,8000,6800,4,30,tidak,tidak
+8991000000044,Tapioka 1 kg,kelontong,barang,kg,11000,9500,4,28,tidak,tidak
+8991000000045,Kacang Tanah Kupas 1 kg,kelontong,barang,kg,32000,28000,3,18,tidak,tidak
+8991000000046,Kacang Hijau 1 kg,kelontong,barang,kg,30000,26000,3,16,tidak,tidak
+8991000000047,Rokok Kretek 12 Batang,kelontong,barang,bungkus,17000,15500,12,100,ya,tidak
+8991000000048,Rokok Filter 12 Batang,kelontong,barang,bungkus,20000,18500,12,90,ya,tidak
+8991000000049,Korek Api 1 Bungkus,kelontong,barang,bungkus,4000,3000,10,50,tidak,tidak
+8991000000050,Baterai AA 1 Pak Isi 2,kelontong,barang,pak,6000,4500,6,40,tidak,tidak
+8991000000051,Lilin 1 Pak,kelontong,barang,pak,5000,3800,5,30,tidak,tidak
+8991000000052,Tisu Wajah 1 Pak,kelontong,barang,pak,8000,6500,6,42,tidak,tidak
+8991000000053,Pembersih Lantai 800 ml,kelontong,barang,botol,18000,15000,3,20,tidak,tidak
+8991000000054,Pasta Gigi Anak 45 gram,kelontong,barang,pcs,9000,7500,3,18,tidak,tidak
+8991000000055,Balsem 1 Kaleng,kelontong,barang,kaleng,12000,10000,4,22,tidak,tidak
+8992000000001,Pupuk Urea 50 kg,pupuk subsidi,barang,sak,115000,100000,2,20,tidak,tidak
+8992000000002,Pupuk Urea 25 kg,pupuk subsidi,barang,sak,60000,52000,2,24,tidak,tidak
+8992000000003,Pupuk NPK Phonska 50 kg,pupuk subsidi,barang,sak,130000,115000,2,18,tidak,tidak
+8992000000004,Pupuk NPK Phonska 25 kg,pupuk subsidi,barang,sak,68000,59000,2,20,tidak,tidak
+8992000000005,Pupuk SP-36 50 kg,pupuk subsidi,barang,sak,125000,110000,2,15,tidak,tidak
+8992000000006,Pupuk ZA 50 kg,pupuk subsidi,barang,sak,95000,83000,2,16,tidak,tidak
+8992000000007,Pupuk KCl 50 kg,pupuk subsidi,barang,sak,120000,105000,2,14,tidak,tidak
+8992000000008,Pupuk Organik Granul 20 kg,pupuk subsidi,barang,sak,45000,38000,3,25,tidak,tidak
+8992000000009,Pupuk Organik Cair 1 L,pupuk subsidi,barang,botol,25000,20000,4,30,tidak,tidak
+8992000000010,Pupuk Urea 1 kg Eceran,pupuk subsidi,barang,kg,3500,2800,10,80,tidak,tidak
+8992000000011,Pupuk NPK 1 kg Eceran,pupuk subsidi,barang,kg,4000,3200,10,70,tidak,tidak
+8992000000012,Dolomit Pertanian 50 kg,pupuk subsidi,barang,sak,55000,45000,2,12,tidak,tidak
+8992000000013,Kapur Pertanian 25 kg,pupuk subsidi,barang,sak,32000,26000,2,10,tidak,tidak
+8992000000014,ZPT Pupuk Daun 100 ml,pupuk subsidi,barang,botol,30000,24000,3,18,tidak,tidak
+8992000000015,Pupuk Kandang 40 kg,pupuk subsidi,barang,karung,30000,24000,3,22,tidak,tidak
+8993000000001,Dorokdok Kulit Sapi Mentah 250 gram,kerupuk kulit,barang,bungkus,30000,25000,4,30,ya,tidak
+8993000000002,Dorokdok Kulit Sapi Mentah 500 gram,kerupuk kulit,barang,bungkus,58000,49000,3,20,tidak,tidak
+8993000000003,Dorokdok Kulit Sapi Mentah 1 kg,kerupuk kulit,barang,kg,110000,95000,2,15,tidak,tidak
+8993000000004,Dorokdok Goreng Siap Santap 100 gram,kerupuk kulit,barang,bungkus,15000,12000,6,40,ya,tidak
+8993000000005,Dorokdok Goreng Siap Santap 250 gram,kerupuk kulit,barang,bungkus,32000,27000,4,28,tidak,tidak
+8993000000006,Kerupuk Kulit Kerbau Mentah 250 gram,kerupuk kulit,barang,bungkus,34000,28000,4,24,tidak,tidak
+8993000000007,Kerupuk Kulit Kerbau Mentah 500 gram,kerupuk kulit,barang,bungkus,65000,55000,3,18,tidak,tidak
+8993000000008,Kerupuk Kulit Sapi Matang 200 gram,kerupuk kulit,barang,bungkus,28000,23000,4,26,tidak,tidak
+8993000000009,Kerupuk Kulit Sapi Matang 1 kg,kerupuk kulit,barang,kg,120000,100000,2,12,tidak,tidak
+8993000000010,Kerupuk Kulit Bulat Mentah 250 gram,kerupuk kulit,barang,bungkus,26000,21000,4,22,tidak,tidak
+8993000000011,Kerupuk Kulit Bulat Matang 200 gram,kerupuk kulit,barang,bungkus,24000,19000,4,20,tidak,tidak
+8993000000012,Kerupuk Kulit Jari Mentah 250 gram,kerupuk kulit,barang,bungkus,27000,22000,4,20,tidak,tidak
+8993000000013,Rambak Kulit Sapi 200 gram,kerupuk kulit,barang,bungkus,30000,25000,4,18,tidak,tidak
+8993000000014,Kerupuk Kulit Sambal Balado 150 gram,kerupuk kulit,barang,bungkus,18000,14000,6,36,ya,tidak
+8993000000015,Kerupuk Kulit Pedas Manis 150 gram,kerupuk kulit,barang,bungkus,18000,14000,6,30,tidak,tidak
+8993000000016,Kerupuk Kulit Original 100 gram,kerupuk kulit,barang,bungkus,12000,9000,8,45,tidak,tidak
+8993000000017,Kerupuk Kulit Ekonomis 50 gram,kerupuk kulit,barang,bungkus,7000,5000,10,60,tidak,tidak
+8993000000018,Kerupuk Kulit Mentah Curah 1 kg,kerupuk kulit,barang,kg,95000,82000,2,14,tidak,tidak
+8993000000019,Dorokdok Curah 1 kg,kerupuk kulit,barang,kg,100000,87000,2,13,tidak,tidak
+8993000000020,Kerupuk Kulit Pak Isi 10 Bungkus,kerupuk kulit,barang,pak,145000,125000,2,10,tidak,tidak
+8993000000021,Kerupuk Kulit Pak Isi 5 Bungkus,kerupuk kulit,barang,pak,75000,64000,2,12,tidak,tidak
+8993000000022,Kerupuk Kulit Mie 200 gram,kerupuk kulit,barang,bungkus,16000,13000,5,26,tidak,tidak
+,Sewa Traktor Roda 2 per Jam,sewa traktor,jasa,jam,250000,0,0,0,tidak,tidak
+,Sewa Traktor Roda 2 per Hari,sewa traktor,jasa,hari,1200000,0,0,0,ya,tidak
+,Sewa Traktor Roda 4 per Jam,sewa traktor,jasa,jam,400000,0,0,0,tidak,tidak
+,Sewa Traktor Roda 4 per Hari,sewa traktor,jasa,hari,2000000,0,0,0,tidak,tidak
+,Sewa Traktor Bajak Sawah per Rit,sewa traktor,jasa,rit,350000,0,0,0,tidak,tidak
+,Sewa Traktor Rotari per Rit,sewa traktor,jasa,rit,375000,0,0,0,tidak,tidak
+,Sewa Traktor Angkut Hasil per Rit,sewa traktor,jasa,rit,300000,0,0,0,tidak,tidak
+,Sewa Traktor Paket 1 Hektar,sewa traktor,jasa,unit,1800000,0,0,0,tidak,tidak
+,Biaya Operator Traktor per Hari,sewa traktor,jasa,hari,250000,0,0,0,tidak,tidak
+8994000000001,Gabah Kering Panen 1 kg,pasca panen,barang,kg,6500,5500,50,500,tidak,tidak
+8994000000002,Gabah Kering Giling 1 kg,pasca panen,barang,kg,7200,6200,50,400,tidak,tidak
+8994000000003,Beras Hasil Giling 1 kg,pasca panen,barang,kg,14000,12000,30,200,tidak,tidak
+8994000000004,Jagung Pipil Kering 1 kg,pasca panen,barang,kg,5500,4700,40,300,tidak,tidak
+8994000000005,Kedelai Kering 1 kg,pasca panen,barang,kg,11000,9500,20,120,tidak,tidak
+8994000000006,Kacang Tanah Kering 1 kg,pasca panen,barang,kg,28000,24000,15,80,tidak,tidak
+8994000000007,Dedak Padi 1 kg,pasca panen,barang,kg,4000,3200,25,150,tidak,tidak
+8994000000008,Sekam Padi 1 Karung,pasca panen,barang,karung,15000,12000,10,60,tidak,tidak
+8994000000009,Bekatul Halus 1 kg,pasca panen,barang,kg,5000,4000,20,100,tidak,tidak
+8994000000010,Menir Beras 1 kg,pasca panen,barang,kg,3500,2800,20,90,tidak,tidak
+,Jasa Penggilingan Padi per 100 kg,pasca panen,jasa,kali,25000,0,0,0,tidak,tidak
+,Jasa Pengeringan Gabah per 100 kg,pasca panen,jasa,kali,15000,0,0,0,tidak,tidak
+,Jasa Sortir dan Pengemasan per 100 kg,pasca panen,jasa,kali,20000,0,0,0,tidak,tidak
+,Jasa Pemipilan Jagung per 100 kg,pasca panen,jasa,kali,18000,0,0,0,tidak,tidak
+,Jasa Penjemuran Gabah per Hari,pasca panen,jasa,hari,80000,0,0,0,tidak,tidak
+8994000000011,Karung Bekas 50 kg,pasca panen,barang,pcs,3000,2000,20,120,tidak,tidak
+8994000000012,Tali Rafia 1 Roll,pasca panen,barang,pcs,18000,14000,5,30,tidak,tidak
+8994000000013,Plastik Kemasan Beras 5 kg 1 Pak,pasca panen,barang,pak,25000,20000,5,24,tidak,tidak
+8994000000014,Terpal 4x6 Meter,pasca panen,barang,pcs,95000,80000,2,12,tidak,tidak
+8994000000015,Garam Krosok 1 kg,pasca panen,barang,kg,6000,4800,10,60,tidak,tidak

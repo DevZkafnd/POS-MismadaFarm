@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "seed": "tsx scripts/seed.ts",
     "format": "prettier --write ."
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "dexie": "^4.4.7",
     "drizzle-orm": "^0.45.4",
     "next": "16.4.6",
@@ -32,6 +34,7 @@
     "prettier": "^3.10.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "^5.1.1"
   }

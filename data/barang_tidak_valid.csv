@@ -1,0 +1,9 @@
+kode_barcode,nama_barang,lini,tipe,satuan,harga_jual_aktif,harga_beli_terakhir,stok_minimum,stok_awal,favorit,cepat_rusak
+8999000000001,Gula Pasir Duplikat,kelontong,barang,kg,16000,14500,5,10,tidak,tidak
+8999000000001,Gula Pasir Duplikat Lagi,kelontong,barang,kg,16500,14500,5,10,tidak,tidak
+8999000000002,Barang Tanpa Harga,kelontong,barang,pcs,,5000,5,10,tidak,tidak
+8999000000003,Barang Satuan Aneh,kelontong,barang,kotak,10000,8000,5,10,tidak,tidak
+8999000000004,Barang Lini Aneh,elektronik,barang,pcs,10000,8000,5,10,tidak,tidak
+8999000000005,,kelontong,barang,pcs,10000,8000,5,10,tidak,tidak
+8999000000006,Barang Tipe Aneh,kelontong,produk,pcs,10000,8000,5,10,tidak,tidak
+8999000000007,Barang Harga Huruf,kelontong,barang,pcs,seribu,8000,5,10,tidak,tidak
