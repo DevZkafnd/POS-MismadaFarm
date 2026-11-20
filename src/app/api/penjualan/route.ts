@@ -1,7 +1,7 @@
 import { and, eq, sql } from "drizzle-orm";
 import { SEMUA_PERAN } from "@/lib/auth/peran";
 import { requireRole } from "@/lib/auth/rbac";
-import { barang, detailPenjualan, stokBatch, transaksiPenjualan } from "@/lib/db/schema";
+import { barang, detailPenjualan, piutang, stokBatch, transaksiPenjualan } from "@/lib/db/schema";
 import { alokasiFefo, hitungKembalian, hitungTotal } from "@/lib/domain/stok";
 import { bacaJson, butuhDb, GalatHttp, responsGalat } from "@/lib/http";
 import { catatAktivitas } from "@/lib/log";
@@ -134,6 +134,19 @@ export async function POST(req: Request) {
             peringatan.push(`${item.namaItem} kurang ${kurang} dari stok tercatat`);
           }
         }
+      }
+
+      // Kasbon membuat piutang pelanggan (BR-05, F09). Kasbon baru menambah kas
+      // saat dilunasi, sehingga transaksi kasbon tidak dihitung sebagai tunai.
+      if (isi.metode === "kasbon") {
+        await tx.insert(piutang).values({
+          idTransaksi: isi.idTransaksi,
+          idPelanggan: isi.idPelanggan as number,
+          nilaiAwal: total,
+          saldo: total,
+          jatuhTempo: isi.jatuhTempo as string,
+          status: "belum",
+        });
       }
 
       return { peringatanStok: peringatan };

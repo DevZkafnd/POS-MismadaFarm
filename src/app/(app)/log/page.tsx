@@ -20,6 +20,14 @@ const LABEL_AKSI: Record<string, string> = {
   login: "Masuk",
   logout: "Keluar",
   ubah_harga: "Ubah Harga",
+  jual: "Penjualan",
+  penerimaan: "Penerimaan Barang",
+  tambah_pemasok: "Tambah Pemasok",
+  tambah_pelanggan: "Tambah Pelanggan",
+  pelunasan_kasbon: "Pelunasan Kasbon",
+  pengeluaran: "Pengeluaran",
+  bayar_hutang: "Bayar Hutang",
+  rekap: "Rekap Kas",
 };
 
 export default function HalamanLog() {

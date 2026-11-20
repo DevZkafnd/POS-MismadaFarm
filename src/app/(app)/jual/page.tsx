@@ -15,6 +15,8 @@ type Barang = BarangRingkas & {
 
 type Lini = { idLini: number; namaLini: string };
 
+type Pelanggan = { idPelanggan: number; nama: string; noHp: string | null };
+
 type ItemKeranjang = {
   kunci: string;
   idBarang: number | null;
@@ -521,7 +523,7 @@ function Keranjang({
             onClick={() => setBukaBayar(true)}
             className="min-h-14 rounded-xl bg-emerald-600 px-6 text-lg font-semibold text-white disabled:opacity-50"
           >
-            Bayar Tunai
+            Bayar
           </button>
         </div>
       </div>
@@ -555,6 +557,7 @@ function DialogBayar({
   onTutup: () => void;
   onSukses: () => void;
 }) {
+  const [metode, setMetode] = useState<"tunai" | "kasbon">("tunai");
   const [dibayar, setDibayar] = useState("");
   const [galat, setGalat] = useState<string | null>(null);
   const [memuat, setMemuat] = useState(false);
@@ -564,10 +567,69 @@ function DialogBayar({
   const [lanjutStokKurang, setLanjutStokKurang] = useState(itemKurang.length === 0);
   const adaStokKurang = itemKurang.length > 0;
 
+  const [pelanggan, setPelanggan] = useState<Pelanggan[]>([]);
+  const [idPelanggan, setIdPelanggan] = useState<number | "">("");
+  const [jatuhTempo, setJatuhTempo] = useState("");
+  const [bukaPelangganBaru, setBukaPelangganBaru] = useState(false);
+  const [namaBaru, setNamaBaru] = useState("");
+  const [hpBaru, setHpBaru] = useState("");
+
+  useEffect(() => {
+    if (metode !== "kasbon") return;
+    let batal = false;
+    fetch("/api/pelanggan")
+      .then(async (res) => {
+        if (!res.ok) throw new Error();
+        return (await res.json()) as { pelanggan: Pelanggan[] };
+      })
+      .then((data) => {
+        if (!batal) setPelanggan(data.pelanggan);
+      })
+      .catch(() => {
+        if (!batal) setGalat("Gagal memuat daftar pelanggan.");
+      });
+    return () => {
+      batal = true;
+    };
+  }, [metode]);
+
   const dibayarAngka = Number(dibayar || 0);
   const kembalian = hitungKembalian(total, dibayarAngka);
 
+  async function tambahPelanggan() {
+    if (!namaBaru.trim()) return setGalat("Nama pelanggan wajib diisi.");
+    setGalat(null);
+    try {
+      const res = await fetch("/api/pelanggan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nama: namaBaru.trim(), noHp: hpBaru.trim() || null }),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { pesan?: string };
+        setGalat(data.pesan ?? "Gagal menambah pelanggan.");
+        return;
+      }
+      const data = (await res.json()) as { pelanggan: Pelanggan };
+      setPelanggan((lama) =>
+        [...lama, data.pelanggan].sort((a, b) => a.nama.localeCompare(b.nama)),
+      );
+      setIdPelanggan(data.pelanggan.idPelanggan);
+      setNamaBaru("");
+      setHpBaru("");
+      setBukaPelangganBaru(false);
+    } catch {
+      setGalat("Tidak bisa menghubungi server.");
+    }
+  }
+
   async function kirim() {
+    if (metode === "kasbon" && !idPelanggan) {
+      return setGalat("Pilih pelanggan untuk transaksi kasbon.");
+    }
+    if (metode === "kasbon" && !jatuhTempo) {
+      return setGalat("Isi tanggal jatuh tempo kasbon.");
+    }
     setMemuat(true);
     setGalat(null);
     try {
@@ -576,8 +638,10 @@ function DialogBayar({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           idTransaksi: crypto.randomUUID(),
-          metode: "tunai",
-          dibayar: dibayarAngka,
+          metode,
+          dibayar: metode === "tunai" ? dibayarAngka : undefined,
+          idPelanggan: metode === "kasbon" ? idPelanggan : undefined,
+          jatuhTempo: metode === "kasbon" ? jatuhTempo : undefined,
           items: keranjang.map((i) => ({
             idBarang: i.idBarang,
             namaItem: i.namaItem,
@@ -610,12 +674,22 @@ function DialogBayar({
     return (
       <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 p-4">
         <div className="w-full max-w-sm rounded-2xl bg-white p-5 text-center">
-          <p className="text-emerald-600">Transaksi tersimpan</p>
+          <p className="text-emerald-600">
+            {metode === "kasbon" ? "Kasbon tersimpan" : "Transaksi tersimpan"}
+          </p>
           <p className="mt-2 text-sm text-zinc-500">{struk.noTransaksi}</p>
           <p className="mt-4 text-sm text-zinc-500">Total</p>
           <p className="text-2xl font-bold">{rupiah.format(struk.total)}</p>
-          <p className="mt-3 text-sm text-zinc-500">Kembalian</p>
-          <p className="text-2xl font-bold text-emerald-700">{rupiah.format(struk.kembalian)}</p>
+          {metode === "tunai" ? (
+            <>
+              <p className="mt-3 text-sm text-zinc-500">Kembalian</p>
+              <p className="text-2xl font-bold text-emerald-700">{rupiah.format(struk.kembalian)}</p>
+            </>
+          ) : (
+            <p className="mt-3 text-sm text-amber-700">
+              Dicatat sebagai kasbon. Kas bertambah saat pelunasan.
+            </p>
+          )}
           <button
             type="button"
             onClick={onSukses}
@@ -630,9 +704,34 @@ function DialogBayar({
 
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-5">
-        <h2 className="text-lg font-bold">Bayar Tunai</h2>
+      <div className="max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-2xl bg-white p-5">
+        <h2 className="text-lg font-bold">Pembayaran</h2>
         <p className="mt-1 text-sm text-zinc-500">Total: {rupiah.format(total)}</p>
+
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setMetode("tunai")}
+            className={`min-h-11 rounded-xl border text-sm font-medium ${
+              metode === "tunai"
+                ? "border-emerald-600 bg-emerald-600 text-white"
+                : "border-zinc-300 bg-white text-zinc-700"
+            }`}
+          >
+            Tunai
+          </button>
+          <button
+            type="button"
+            onClick={() => setMetode("kasbon")}
+            className={`min-h-11 rounded-xl border text-sm font-medium ${
+              metode === "kasbon"
+                ? "border-emerald-600 bg-emerald-600 text-white"
+                : "border-zinc-300 bg-white text-zinc-700"
+            }`}
+          >
+            Kasbon
+          </button>
+        </div>
 
         {adaStokKurang && (
           <div className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
@@ -657,18 +756,88 @@ function DialogBayar({
           </div>
         )}
 
-        <label className="mt-4 block text-sm font-medium">Uang diterima (Rp)</label>
-        <input
-          type="number"
-          inputMode="numeric"
-          min={0}
-          value={dibayar}
-          onChange={(e) => setDibayar(e.target.value)}
-          className="mt-1 min-h-12 w-full rounded-xl border border-zinc-300 px-3 text-lg"
-        />
+        {metode === "tunai" ? (
+          <>
+            <label className="mt-4 block text-sm font-medium">Uang diterima (Rp)</label>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={0}
+              value={dibayar}
+              onChange={(e) => setDibayar(e.target.value)}
+              className="mt-1 min-h-12 w-full rounded-xl border border-zinc-300 px-3 text-lg"
+            />
 
-        <p className="mt-3 text-sm text-zinc-500">Kembalian</p>
-        <p className="text-xl font-bold">{rupiah.format(kembalian)}</p>
+            <p className="mt-3 text-sm text-zinc-500">Kembalian</p>
+            <p className="text-xl font-bold">{rupiah.format(kembalian)}</p>
+          </>
+        ) : (
+          <>
+            <label className="mt-4 block text-sm font-medium">Pelanggan (wajib)</label>
+            <select
+              value={idPelanggan}
+              onChange={(e) => setIdPelanggan(e.target.value ? Number(e.target.value) : "")}
+              className="mt-1 min-h-12 w-full rounded-xl border border-zinc-300 bg-white px-3"
+            >
+              <option value="">— pilih pelanggan —</option>
+              {pelanggan.map((p) => (
+                <option key={p.idPelanggan} value={p.idPelanggan}>
+                  {p.nama}
+                  {p.noHp ? ` · ${p.noHp}` : ""}
+                </option>
+              ))}
+            </select>
+
+            {!bukaPelangganBaru ? (
+              <button
+                type="button"
+                onClick={() => setBukaPelangganBaru(true)}
+                className="mt-2 min-h-10 rounded-lg border border-emerald-600 px-3 text-sm font-medium text-emerald-700"
+              >
+                + Pelanggan baru
+              </button>
+            ) : (
+              <div className="mt-2 flex flex-col gap-2 rounded-lg bg-zinc-50 p-3">
+                <input
+                  value={namaBaru}
+                  onChange={(e) => setNamaBaru(e.target.value)}
+                  placeholder="Nama pelanggan"
+                  className="min-h-11 rounded-lg border border-zinc-300 px-3"
+                />
+                <input
+                  value={hpBaru}
+                  onChange={(e) => setHpBaru(e.target.value)}
+                  placeholder="No. HP (opsional)"
+                  className="min-h-11 rounded-lg border border-zinc-300 px-3"
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setBukaPelangganBaru(false)}
+                    className="min-h-10 flex-1 rounded-lg border border-zinc-300 text-sm font-medium"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void tambahPelanggan()}
+                    className="min-h-10 flex-1 rounded-lg bg-emerald-600 text-sm font-semibold text-white"
+                  >
+                    Simpan Pelanggan
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <label className="mt-4 block text-sm font-medium">Jatuh tempo (wajib)</label>
+            <input
+              type="date"
+              value={jatuhTempo}
+              onChange={(e) => setJatuhTempo(e.target.value)}
+              className="mt-1 min-h-12 w-full rounded-xl border border-zinc-300 px-3"
+            />
+          </>
+        )}
 
         {galat && <p className="mt-3 text-sm text-red-700">{galat}</p>}
 
@@ -683,7 +852,11 @@ function DialogBayar({
           <button
             type="button"
             onClick={() => void kirim()}
-            disabled={memuat || dibayar === "" || (adaStokKurang && !lanjutStokKurang)}
+            disabled={
+              memuat ||
+              (metode === "tunai" && dibayar === "") ||
+              (adaStokKurang && !lanjutStokKurang)
+            }
             className="min-h-12 flex-1 rounded-xl bg-emerald-600 font-semibold text-white disabled:opacity-50"
           >
             {memuat ? "Menyimpan…" : "Simpan"}

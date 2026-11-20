@@ -63,16 +63,32 @@ export const skemaPenjualan = z
     metode: z.enum(METODE_BAYAR),
     /** Wajib bila metode kasbon (BR-05). */
     idPelanggan: z.number().int().positive().nullable().optional(),
+    /** Wajib bila metode kasbon: dasar jatuh tempo piutang (BR-05). */
+    jatuhTempo: z
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Jatuh tempo harus format YYYY-MM-DD")
+      .nullable()
+      .optional()
+      .or(z.literal("").transform(() => null)),
     /** Uang yang diserahkan pembeli (untuk hitung kembalian). */
     dibayar: uang.optional(),
     items: z.array(skemaItemPenjualan).min(1, "Keranjang tidak boleh kosong"),
   })
   .superRefine((data, ctx) => {
-    if (data.metode === "kasbon" && !data.idPelanggan) {
+    if (data.metode !== "kasbon") return;
+    if (!data.idPelanggan) {
       ctx.addIssue({
         code: "custom",
         message: "Transaksi kasbon wajib memilih pelanggan",
         path: ["idPelanggan"],
+      });
+    }
+    if (!data.jatuhTempo) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Transaksi kasbon wajib mengisi tanggal jatuh tempo",
+        path: ["jatuhTempo"],
       });
     }
   });

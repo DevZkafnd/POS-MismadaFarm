@@ -15,6 +15,11 @@ const KARTU: Kartu[] = [
     keterangan: "Catat penjualan: pindai barcode, favorit, atau harga manual.",
   },
   {
+    href: "/kasbon",
+    judul: "Kasbon",
+    keterangan: "Pantau kasbon pelanggan dan catat pelunasan.",
+  },
+  {
     href: "/barang",
     judul: "Data Barang",
     keterangan: "Cari barang, lihat stok, dan harga jual.",
@@ -23,6 +28,28 @@ const KARTU: Kartu[] = [
     href: "/penerimaan",
     judul: "Penerimaan Barang",
     keterangan: "Catat barang masuk: tunai, kredit, atau titipan.",
+    peran: [PERAN.PEMILIK, PERAN.PENERUS_USAHA],
+  },
+  {
+    href: "/keuangan",
+    judul: "Keuangan",
+    keterangan: "Catat pengeluaran per lini dan bayar hutang pemasok.",
+    peran: [PERAN.PEMILIK, PERAN.PENERUS_USAHA],
+  },
+  {
+    href: "/rekap",
+    judul: "Rekap Kas Harian",
+    keterangan: "Bandingkan uang fisik dengan kas seharusnya.",
+  },
+  {
+    href: "/notifikasi",
+    judul: "Notifikasi",
+    keterangan: "Peringatan stok menipis, hampir kedaluwarsa, kasbon jatuh tempo.",
+  },
+  {
+    href: "/laporan",
+    judul: "Laporan",
+    keterangan: "Laba-rugi per lini, margin barang, dan ekspor data.",
     peran: [PERAN.PEMILIK, PERAN.PENERUS_USAHA],
   },
   {
