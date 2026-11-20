@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import PemindaiBarcode from "@/components/PemindaiBarcode";
 import { cocokkanBarcode, pesanHasilBarcode, type BarangRingkas } from "@/lib/domain/barcode";
 import { hitungKembalian, hitungTotal } from "@/lib/domain/stok";
+import { simpanKeAntrean } from "@/lib/offline/sinkron";
 import { JALUR_INPUT, type JalurInput } from "@/lib/validasi/penjualan";
 
 type Barang = BarangRingkas & {
@@ -561,9 +562,9 @@ function DialogBayar({
   const [dibayar, setDibayar] = useState("");
   const [galat, setGalat] = useState<string | null>(null);
   const [memuat, setMemuat] = useState(false);
-  const [struk, setStruk] = useState<{ noTransaksi: string; total: number; kembalian: number } | null>(
-    null,
-  );
+  const [struk, setStruk] = useState<
+    { noTransaksi: string; total: number; kembalian: number; offline?: boolean } | null
+  >(null);
   const [lanjutStokKurang, setLanjutStokKurang] = useState(itemKurang.length === 0);
   const adaStokKurang = itemKurang.length > 0;
 
@@ -632,25 +633,36 @@ function DialogBayar({
     }
     setMemuat(true);
     setGalat(null);
+
+    const muatan = {
+      idTransaksi: crypto.randomUUID(),
+      metode,
+      dibayar: metode === "tunai" ? dibayarAngka : undefined,
+      idPelanggan: metode === "kasbon" ? idPelanggan : undefined,
+      jatuhTempo: metode === "kasbon" ? jatuhTempo : undefined,
+      items: keranjang.map((i) => ({
+        idBarang: i.idBarang,
+        namaItem: i.namaItem,
+        jumlah: i.jumlah,
+        hargaSatuan: i.hargaSatuan,
+        jalurInput: i.jalurInput,
+        idLini: i.idLini,
+      })),
+    };
+
+    // F19: tanpa sinyal, transaksi disimpan ke antrean di HP (IndexedDB).
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      await simpanKeAntrean(muatan);
+      setStruk({ noTransaksi: "Tersimpan di HP", total, kembalian, offline: true });
+      setMemuat(false);
+      return;
+    }
+
     try {
       const res = await fetch("/api/penjualan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          idTransaksi: crypto.randomUUID(),
-          metode,
-          dibayar: metode === "tunai" ? dibayarAngka : undefined,
-          idPelanggan: metode === "kasbon" ? idPelanggan : undefined,
-          jatuhTempo: metode === "kasbon" ? jatuhTempo : undefined,
-          items: keranjang.map((i) => ({
-            idBarang: i.idBarang,
-            namaItem: i.namaItem,
-            jumlah: i.jumlah,
-            hargaSatuan: i.hargaSatuan,
-            jalurInput: i.jalurInput,
-            idLini: i.idLini,
-          })),
-        }),
+        body: JSON.stringify(muatan),
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { pesan?: string };
@@ -664,7 +676,9 @@ function DialogBayar({
       };
       setStruk(data);
     } catch {
-      setGalat("Tidak bisa menghubungi server.");
+      // Koneksi putus di tengah jalan: simpan ke antrean, kirim saat online.
+      await simpanKeAntrean(muatan);
+      setStruk({ noTransaksi: "Tersimpan di HP", total, kembalian, offline: true });
     } finally {
       setMemuat(false);
     }
@@ -675,9 +689,19 @@ function DialogBayar({
       <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 p-4">
         <div className="w-full max-w-sm rounded-2xl bg-white p-5 text-center">
           <p className="text-emerald-600">
-            {metode === "kasbon" ? "Kasbon tersimpan" : "Transaksi tersimpan"}
+            {struk.offline
+              ? "Tersimpan di HP"
+              : metode === "kasbon"
+                ? "Kasbon tersimpan"
+                : "Transaksi tersimpan"}
           </p>
           <p className="mt-2 text-sm text-zinc-500">{struk.noTransaksi}</p>
+          {struk.offline && (
+            <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+              Tidak ada sinyal. Transaksi tersimpan di HP dan akan terkirim otomatis — tercatat
+              tepat sekali saat kembali online.
+            </p>
+          )}
           <p className="mt-4 text-sm text-zinc-500">Total</p>
           <p className="text-2xl font-bold">{rupiah.format(struk.total)}</p>
           {metode === "tunai" ? (

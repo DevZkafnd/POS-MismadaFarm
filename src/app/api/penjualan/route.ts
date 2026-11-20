@@ -1,8 +1,17 @@
 import { and, eq, sql } from "drizzle-orm";
 import { SEMUA_PERAN } from "@/lib/auth/peran";
 import { requireRole } from "@/lib/auth/rbac";
-import { barang, detailPenjualan, piutang, stokBatch, transaksiPenjualan } from "@/lib/db/schema";
+import {
+  barang,
+  detailPenjualan,
+  hutangPemasok,
+  piutang,
+  stokBatch,
+  titipJual,
+  transaksiPenjualan,
+} from "@/lib/db/schema";
 import { alokasiFefo, hitungKembalian, hitungTotal } from "@/lib/domain/stok";
+import { statusTitipDari, tambahLaku } from "@/lib/domain/titip";
 import { bacaJson, butuhDb, GalatHttp, responsGalat } from "@/lib/http";
 import { catatAktivitas } from "@/lib/log";
 import { nomorTransaksi, skemaPenjualan } from "@/lib/validasi/penjualan";
@@ -110,9 +119,13 @@ export async function POST(req: Request) {
               idBatch: stokBatch.idBatch,
               jumlahSisa: stokBatch.jumlahSisa,
               tglKedaluwarsa: stokBatch.tglKedaluwarsa,
+              statusMilik: stokBatch.statusMilik,
+              idPemasok: stokBatch.idPemasok,
             })
             .from(stokBatch)
             .where(and(eq(stokBatch.idBarang, item.idBarang), sql`${stokBatch.jumlahSisa} > 0`));
+
+          const petaBatch = new Map(batches.map((b) => [b.idBatch, b]));
 
           const { alokasi, kurang } = alokasiFefo(
             batches.map((b) => ({
@@ -128,6 +141,61 @@ export async function POST(req: Request) {
               .update(stokBatch)
               .set({ jumlahSisa: sql`${stokBatch.jumlahSisa} - ${a.jumlah}` })
               .where(eq(stokBatch.idBatch, a.idBatch));
+
+            // BR-07: barang titipan yang laku menaikkan kewajiban bayar ke penitip.
+            const batch = petaBatch.get(a.idBatch);
+            if (batch?.statusMilik === "titipan" && batch.idPemasok) {
+              const [titip] = await tx
+                .select()
+                .from(titipJual)
+                .where(
+                  and(
+                    eq(titipJual.idPemasok, batch.idPemasok),
+                    eq(titipJual.idBarang, item.idBarang),
+                    eq(titipJual.status, "aktif"),
+                  ),
+                )
+                .orderBy(titipJual.idTitip)
+                .limit(1);
+
+              if (titip) {
+                const lakuBaru = tambahLaku(
+                  Number(titip.jumlahLaku),
+                  Number(titip.jumlahTitip),
+                  a.jumlah,
+                );
+                const diterapkan = Math.round((lakuBaru - Number(titip.jumlahLaku)) * 1000) / 1000;
+                if (diterapkan > 0) {
+                  await tx
+                    .update(titipJual)
+                    .set({
+                      jumlahLaku: String(lakuBaru),
+                      status: statusTitipDari(lakuBaru, Number(titip.jumlahTitip)),
+                    })
+                    .where(eq(titipJual.idTitip, titip.idTitip));
+
+                  const nilai = Math.round(titip.hargaTitip * diterapkan);
+                  const [hutangAda] = await tx
+                    .select()
+                    .from(hutangPemasok)
+                    .where(eq(hutangPemasok.idTitip, titip.idTitip));
+
+                  if (hutangAda) {
+                    await tx
+                      .update(hutangPemasok)
+                      .set({ saldo: hutangAda.saldo + nilai, status: "belum" })
+                      .where(eq(hutangPemasok.idHutang, hutangAda.idHutang));
+                  } else {
+                    await tx.insert(hutangPemasok).values({
+                      idTitip: titip.idTitip,
+                      idPemasok: batch.idPemasok,
+                      saldo: nilai,
+                      status: "belum",
+                    });
+                  }
+                }
+              }
+            }
           }
 
           if (kurang > 0) {

@@ -14,6 +14,7 @@ prototipe POS Mismada Farm (CAPST-XX). Ikuti urutannya dari atas ke bawah.
 | Validasi | Zod v4 |
 | Uji otomatis | Vitest |
 | Ekspor | `pdf-lib` (PDF), `exceljs` (Excel), Web Share API (bagikan ke WhatsApp) |
+| Antrean offline | Dexie (IndexedDB) + UUID idempotensi saat sinyal lemah |
 | PWA | Manifest + Service Worker, dapat dipasang ke layar utama HP |
 
 Uang selalu disimpan sebagai **bilangan bulat rupiah** (bukan pecahan).
@@ -96,7 +97,7 @@ npm run start   # jalankan hasil build produksi
 ## 7. Menguji
 
 ```bash
-npm test        # uji otomatis Vitest (48 tes: FEFO, kembalian, kas, laba, ekspor PDF/Excel, dll.)
+npm test        # uji otomatis Vitest (65 tes: FEFO, kembalian, kas, laba, ekspor PDF/Excel, opname, retur, titip, antrean offline, dll.)
 npm run lint    # pemeriksaan ESLint
 npx tsc --noEmit # pemeriksaan tipe
 ```

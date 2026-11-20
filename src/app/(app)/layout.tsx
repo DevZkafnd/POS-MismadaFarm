@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import AntreanOffline from "@/components/AntreanOffline";
 import { LABEL_PERAN, PERAN, type NamaPeran } from "@/lib/auth/peran";
 
 export type PenggunaAktif = {
@@ -22,6 +23,10 @@ const MENU: { href: string; label: string; peran?: NamaPeran[] }[] = [
   { href: "/kasbon", label: "Kasbon" },
   { href: "/barang", label: "Data Barang" },
   { href: "/penerimaan", label: "Penerimaan", peran: [PERAN.PEMILIK, PERAN.PENERUS_USAHA] },
+  { href: "/opname", label: "Stok Opname", peran: [PERAN.PEMILIK, PERAN.PENERUS_USAHA] },
+  { href: "/retur", label: "Retur" },
+  { href: "/titip", label: "Titip Jual", peran: [PERAN.PEMILIK, PERAN.PENERUS_USAHA] },
+  { href: "/belanja", label: "Daftar Belanja" },
   { href: "/keuangan", label: "Keuangan", peran: [PERAN.PEMILIK, PERAN.PENERUS_USAHA] },
   { href: "/rekap", label: "Rekap" },
   { href: "/notifikasi", label: "Notifikasi" },
@@ -104,6 +109,7 @@ export default function LayoutAplikasi({ children }: { children: React.ReactNode
           })}
         </nav>
       </header>
+      <AntreanOffline />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">{children}</main>
     </div>
   );
