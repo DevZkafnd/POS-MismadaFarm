@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Ikon from "@/components/Ikon";
 import { hitungSelisihOpname, LABEL_STATUS_OPNAME, type StatusOpname } from "@/lib/domain/opname";
 import { PERAN } from "@/lib/auth/peran";
 
@@ -48,7 +49,10 @@ export default function HalamanOpname() {
   const [versi, setVersi] = useState(0);
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold">Stok Opname</h1>
+      <h1 className="flex items-center gap-2">
+        <Ikon nama="opname" className="h-6 w-6" />
+        Stok Opname
+      </h1>
       <p className="text-sm text-zinc-500">
         Hitung stok fisik. Stok baru berubah setelah disetujui Penerus Usaha.
       </p>
@@ -138,9 +142,12 @@ function FormOpname({ onSukses }: { onSukses: () => void }) {
       <CariBarang onPilih={tambahBarang} />
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">Barang dihitung</h2>
+        <h2 className="flex items-center gap-2 text-lg font-bold">
+          <Ikon nama="opname" className="h-5 w-5" />
+          Barang dihitung
+        </h2>
         {items.length === 0 ? (
-          <p className="rounded-xl border border-zinc-200 bg-white p-4 text-sm text-zinc-500">
+          <p className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-500">
             Belum ada barang. Cari barang di atas.
           </p>
         ) : (
@@ -150,7 +157,7 @@ function FormOpname({ onSukses }: { onSukses: () => void }) {
               return (
                 <li
                   key={i.kunci}
-                  className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-3"
+                  className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <p className="font-medium">
@@ -159,35 +166,36 @@ function FormOpname({ onSukses }: { onSukses: () => void }) {
                     <button
                       type="button"
                       onClick={() => setItems((lama) => lama.filter((x) => x.kunci !== i.kunci))}
-                      className="min-h-9 rounded-lg px-2 text-sm text-red-600 hover:bg-red-50"
+                      className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
                     >
+                      <Ikon nama="hapus" className="h-4 w-4" />
                       Hapus
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <div className="flex flex-col">
-                      <label className="text-xs text-zinc-500">Stok sistem</label>
-                      <p className="min-h-11 rounded-lg bg-zinc-100 px-3 py-3 font-medium">
+                      <label className="text-xs font-medium text-zinc-500">Stok sistem</label>
+                      <p className="min-h-11 rounded-lg bg-zinc-100 px-3 py-3 font-medium text-zinc-900">
                         {i.stokSistem}
                       </p>
                     </div>
                     <div className="flex flex-col">
-                      <label className="text-xs text-zinc-500">Stok fisik</label>
+                      <label className="text-xs font-medium text-zinc-500">Stok fisik</label>
                       <input
                         type="number"
                         min={0}
                         step="0.001"
                         value={i.stokFisik}
                         onChange={(e) => ubah(i.kunci, { stokFisik: e.target.value })}
-                        className="min-h-11 rounded-lg border border-zinc-300 px-2"
+                        className="min-h-11 rounded-lg border border-zinc-300 bg-white px-2 text-zinc-900"
                       />
                     </div>
                   </div>
 
                   <div
                     className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold ${
-                      selisih === 0 ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-800"
+                      selisih === 0 ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-900"
                     }`}
                   >
                     <span>Selisih</span>
@@ -196,12 +204,12 @@ function FormOpname({ onSukses }: { onSukses: () => void }) {
 
                   {selisih !== 0 && (
                     <>
-                      <label className="text-xs text-zinc-500">Alasan selisih (wajib)</label>
+                      <label className="text-xs font-medium text-zinc-500">Alasan selisih (wajib)</label>
                       <input
                         value={i.alasan}
                         onChange={(e) => ubah(i.kunci, { alasan: e.target.value })}
                         placeholder="mis. susut, rusak, salah catat"
-                        className="min-h-11 rounded-lg border border-zinc-300 px-3"
+                        className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
                       />
                     </>
                   )}
@@ -219,8 +227,9 @@ function FormOpname({ onSukses }: { onSukses: () => void }) {
         type="button"
         onClick={() => void simpan()}
         disabled={memuat || items.length === 0}
-        className="min-h-14 rounded-xl bg-emerald-600 font-semibold text-white disabled:opacity-50"
+        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
       >
+        <Ikon nama="centang" className="h-4 w-4" />
         {memuat ? "Menyimpan…" : "Simpan Opname"}
       </button>
     </>
@@ -246,13 +255,19 @@ function CariBarang({ onPilih }: { onPilih: (b: Barang) => void }) {
 
   return (
     <section className="flex flex-col gap-2">
-      <input
-        type="search"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Cari barang untuk dihitung…"
-        className="min-h-12 rounded-xl border border-zinc-300 bg-white px-4"
-      />
+      <div className="relative">
+        <Ikon
+          nama="cari"
+          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500"
+        />
+        <input
+          type="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Cari barang untuk dihitung…"
+          className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-zinc-900"
+        />
+      </div>
       <div className="flex flex-col gap-1">
         {hasil
           .filter((b) => b.tipe !== "jasa")
@@ -262,10 +277,10 @@ function CariBarang({ onPilih }: { onPilih: (b: Barang) => void }) {
               key={b.idBarang}
               type="button"
               onClick={() => onPilih(b)}
-              className="flex min-h-12 items-center justify-between rounded-lg border border-zinc-200 bg-white px-3 text-left text-sm hover:border-emerald-500"
+              className="flex min-h-11 items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-white px-3 text-left text-sm transition-colors hover:border-emerald-500 hover:bg-emerald-50"
             >
-              <span>{b.namaBarang}</span>
-              <span className="text-xs text-zinc-500">
+              <span className="font-medium text-zinc-900">{b.namaBarang}</span>
+              <span className="shrink-0 text-xs text-zinc-500">
                 stok sistem {b.stokTotal} {b.satuan}
               </span>
             </button>
@@ -317,15 +332,18 @@ function DaftarOpname({ onSukses }: { onSukses: () => void }) {
 
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="text-lg font-semibold">Riwayat Opname</h2>
+      <h2 className="flex items-center gap-2 text-lg font-bold">
+        <Ikon nama="log" className="h-5 w-5" />
+        Riwayat Opname
+      </h2>
       {daftarTampil.length === 0 ? (
-        <p className="rounded-xl border border-zinc-200 bg-white p-4 text-sm text-zinc-500">
+        <p className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-500">
           Belum ada opname.
         </p>
       ) : (
         <ul className="flex flex-col gap-2">
           {daftarTampil.map((o) => (
-            <li key={o.idOpname} className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-3">
+            <li key={o.idOpname} className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between gap-2">
                 <div>
                   <p className="font-medium">Opname #{o.idOpname}</p>
@@ -334,10 +352,10 @@ function DaftarOpname({ onSukses }: { onSukses: () => void }) {
                   </p>
                 </div>
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${
+                  className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${
                     o.status === "disetujui"
-                      ? "bg-emerald-50 text-emerald-700"
-                      : "bg-amber-50 text-amber-800"
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-amber-100 text-amber-900"
                   }`}
                 >
                   {LABEL_STATUS_OPNAME[o.status]}
@@ -349,7 +367,7 @@ function DaftarOpname({ onSukses }: { onSukses: () => void }) {
                   <li key={r.idBarang} className="flex justify-between gap-2 text-zinc-600">
                     <span>
                       {r.namaBarang}
-                      {r.alasan ? <span className="text-xs text-zinc-400"> · {r.alasan}</span> : null}
+                      {r.alasan ? <span className="text-xs text-zinc-500"> · {r.alasan}</span> : null}
                     </span>
                     <span className={r.selisih === 0 ? "text-zinc-500" : "font-medium text-amber-700"}>
                       {r.selisih > 0 ? `+${r.selisih}` : r.selisih} {r.satuan}
@@ -367,8 +385,9 @@ function DaftarOpname({ onSukses }: { onSukses: () => void }) {
                     <button
                       type="button"
                       onClick={() => setPilih(o)}
-                      className="min-h-11 rounded-xl bg-emerald-600 px-4 font-medium text-white"
+                      className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
                     >
+                      <Ikon nama="centang" className="h-4 w-4" />
                       Setujui
                     </button>
                   )}
@@ -427,8 +446,11 @@ function DialogSetujui({
 
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-5">
-        <h2 className="text-lg font-bold">Setujui Opname #{opname.idOpname}</h2>
+      <div className="w-full max-w-sm rounded-xl border border-zinc-200 bg-white p-5 shadow-xl">
+        <h2 className="flex items-center gap-2 text-lg font-bold">
+          <Ikon nama="centang" className="h-5 w-5" />
+          Setujui Opname #{opname.idOpname}
+        </h2>
         <p className="mt-1 text-sm text-zinc-500">
           {ringkas} barang akan disesuaikan stoknya. Tindakan ini tercatat di log aktivitas.
         </p>
@@ -437,16 +459,18 @@ function DialogSetujui({
           <button
             type="button"
             onClick={onTutup}
-            className="min-h-12 flex-1 rounded-xl border border-zinc-300 font-medium"
+            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
           >
+            <Ikon nama="tutup" className="h-4 w-4" />
             Batal
           </button>
           <button
             type="button"
             onClick={() => void setujui()}
             disabled={memuat}
-            className="min-h-12 flex-1 rounded-xl bg-emerald-600 font-semibold text-white disabled:opacity-50"
+            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
           >
+            <Ikon nama="centang" className="h-4 w-4" />
             {memuat ? "Memproses…" : "Setujui & Sesuaikan Stok"}
           </button>
         </div>

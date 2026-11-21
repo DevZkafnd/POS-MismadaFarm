@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Ikon from "@/components/Ikon";
 import { LABEL_PERAN, type NamaPeran } from "@/lib/auth/peran";
 
 type Akun = { username: string; nama: string; peran: NamaPeran };
@@ -53,11 +54,19 @@ export default function HalamanLogin() {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-10">
-      <header className="text-center">
-        <h1 className="text-2xl font-bold">POS Mismada Farm</h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          {dipilih ? "Masukkan PIN 6 angka" : "Pilih akun Anda"}
-        </p>
+      <header className="flex flex-col items-center gap-3 text-center">
+        <span
+          aria-hidden="true"
+          className="grid h-14 w-14 place-items-center rounded-2xl bg-emerald-600 text-2xl font-bold text-white shadow-sm"
+        >
+          M
+        </span>
+        <div>
+          <h1 className="text-2xl font-bold">POS Mismada Farm</h1>
+          <p className="mt-1 text-sm text-zinc-500">
+            {dipilih ? "Masukkan PIN 6 angka" : "Pilih akun Anda"}
+          </p>
+        </div>
       </header>
 
       {memuatAkun ? (
@@ -73,34 +82,56 @@ export default function HalamanLogin() {
                 setPin("");
                 setGalat(null);
               }}
-              className="flex min-h-14 flex-col items-start rounded-xl border border-zinc-300 bg-white px-4 py-3 text-left hover:border-emerald-500 hover:bg-emerald-50"
+              className="flex min-h-16 w-full items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left shadow-sm transition-colors hover:border-emerald-500 hover:bg-emerald-50"
             >
-              <span className="text-base font-semibold">{akun.nama}</span>
-              <span className="text-sm text-zinc-500">{LABEL_PERAN[akun.peran]}</span>
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-emerald-100 text-emerald-700">
+                <Ikon nama="akun" className="h-5 w-5" />
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate text-base font-semibold text-emerald-900">
+                  {akun.nama}
+                </span>
+                <span className="block text-sm text-zinc-500">{LABEL_PERAN[akun.peran]}</span>
+              </span>
             </button>
           ))}
-          {daftar.length === 0 && (
+          {daftar.length === 0 && !galat && (
             <p className="text-center text-sm text-zinc-500">
               Belum ada akun. Jalankan <code>npm run seed</code> dulu.
+            </p>
+          )}
+          {galat && (
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-center text-sm font-medium text-red-700">
+              {galat}
             </p>
           )}
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          <div className="rounded-xl border border-zinc-300 bg-white px-4 py-3">
-            <p className="text-base font-semibold">{dipilih.nama}</p>
-            <p className="text-sm text-zinc-500">{LABEL_PERAN[dipilih.peran]}</p>
+          <div className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 shadow-sm">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-emerald-100 text-emerald-700">
+              <Ikon nama="akun" className="h-5 w-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-base font-semibold text-emerald-900">{dipilih.nama}</p>
+              <p className="text-sm text-zinc-500">{LABEL_PERAN[dipilih.peran]}</p>
+            </div>
           </div>
 
           <div
             aria-label="PIN"
-            className="flex min-h-14 items-center justify-center gap-3 rounded-xl border border-zinc-300 bg-white text-3xl tracking-[0.5em]"
+            aria-live="polite"
+            className="flex min-h-16 items-center justify-center gap-3 rounded-xl border border-zinc-200 bg-white text-3xl tracking-[0.5em] text-emerald-900 shadow-sm"
           >
-            {pin.length === 0 ? <span className="text-zinc-300">••••••</span> : "•".repeat(pin.length)}
+            {pin.length === 0 ? (
+              <span className="text-zinc-300">••••••</span>
+            ) : (
+              "•".repeat(pin.length)
+            )}
           </div>
 
           {galat && (
-            <p className="rounded-lg bg-red-50 px-3 py-2 text-center text-sm text-red-700">
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-center text-sm font-medium text-red-700">
               {galat}
             </p>
           )}
@@ -113,14 +144,15 @@ export default function HalamanLogin() {
                 <button
                   key={t}
                   type="button"
+                  aria-label={t === "hapus" ? "Hapus" : t}
                   onClick={() => {
                     setGalat(null);
                     if (t === "hapus") setPin((p) => p.slice(0, -1));
                     else setPin((p) => (p.length >= 6 ? p : p + t));
                   }}
-                  className="min-h-14 rounded-xl border border-zinc-300 bg-white text-xl font-semibold hover:bg-zinc-100"
+                  className="flex min-h-14 items-center justify-center rounded-xl border border-zinc-200 bg-white text-xl font-semibold text-emerald-900 shadow-sm transition-colors hover:bg-emerald-50 active:bg-emerald-100"
                 >
-                  {t === "hapus" ? "⌫" : t}
+                  {t === "hapus" ? <Ikon nama="hapus" className="h-6 w-6" /> : t}
                 </button>
               ),
             )}
@@ -130,7 +162,7 @@ export default function HalamanLogin() {
             type="button"
             onClick={masuk}
             disabled={pin.length === 0 || memuat}
-            className="min-h-14 rounded-xl bg-emerald-600 text-lg font-semibold text-white disabled:opacity-50"
+            className="min-h-14 rounded-xl bg-emerald-600 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:opacity-50"
           >
             {memuat ? "Memproses…" : "Masuk"}
           </button>
@@ -141,7 +173,7 @@ export default function HalamanLogin() {
               setPin("");
               setGalat(null);
             }}
-            className="min-h-11 rounded-xl text-sm font-medium text-zinc-600 hover:bg-zinc-100"
+            className="min-h-11 rounded-xl text-sm font-medium text-emerald-800 transition-colors hover:bg-emerald-50"
           >
             Ganti akun
           </button>

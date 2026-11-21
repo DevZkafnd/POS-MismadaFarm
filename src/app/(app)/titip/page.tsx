@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Ikon from "@/components/Ikon";
 import { LABEL_STATUS_TITIP, type StatusTitip } from "@/lib/domain/titip";
 
 /**
@@ -58,38 +59,54 @@ export default function HalamanTitip() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold">Titip Jual</h1>
+      <div className="flex items-center gap-2">
+        <Ikon nama="titip" className="h-6 w-6 text-emerald-700" />
+        <h1 className="text-xl font-bold">Titip Jual</h1>
+      </div>
       <p className="text-sm text-zinc-500">
         Barang titipan masuk lewat menu Penerimaan (jenis titipan). Kewajiban bayar naik
         otomatis saat barang laku, dan dibayar lewat menu Keuangan → Hutang Pemasok.
       </p>
 
       {memuat && <p className="text-sm text-zinc-500">Memuat…</p>}
-      {galat && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{galat}</p>}
+      {galat && (
+        <p className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-800">
+          <Ikon nama="peringatan" className="h-4 w-4 shrink-0" />
+          {galat}
+        </p>
+      )}
 
       {!memuat && !galat && daftar.length === 0 && (
-        <p className="rounded-xl border border-zinc-200 bg-white p-4 text-sm text-zinc-500">
+        <p className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-500 shadow-sm">
           Belum ada titip jual.
         </p>
       )}
 
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-3">
         {daftar.map((t) => {
           const persen = t.jumlahTitip > 0 ? Math.min(100, (t.jumlahLaku / t.jumlahTitip) * 100) : 0;
           return (
-            <li key={t.idTitip} className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="font-medium">{t.namaBarang}</p>
-                  <p className="text-xs text-zinc-500">
-                    {t.namaPemasok} · titip {t.tglTitip}
-                  </p>
+            <li
+              key={t.idTitip}
+              className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
+                    <Ikon nama="titip" className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-zinc-900">{t.namaBarang}</p>
+                    <p className="text-xs text-zinc-500">
+                      {t.namaPemasok} · titip {t.tglTitip}
+                    </p>
+                  </div>
                 </div>
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${
+                  className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${
                     t.status === "selesai"
-                      ? "bg-emerald-50 text-emerald-700"
-                      : "bg-blue-50 text-blue-700"
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-zinc-100 text-zinc-700"
                   }`}
                 >
                   {LABEL_STATUS_TITIP[t.status]}
@@ -108,14 +125,14 @@ export default function HalamanTitip() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="rounded-lg bg-zinc-50 px-3 py-2">
                   <p className="text-xs text-zinc-500">Kewajiban (laku × harga titip)</p>
-                  <p className="font-semibold">{rupiah.format(t.kewajiban)}</p>
+                  <p className="font-semibold text-zinc-900">{rupiah.format(t.kewajiban)}</p>
                 </div>
-                <div className="rounded-lg bg-zinc-50 px-3 py-2">
+                <div className="rounded-lg bg-amber-50 px-3 py-2">
                   <p className="text-xs text-zinc-500">Sisa belum dibayar</p>
-                  <p className="font-semibold text-amber-700">{rupiah.format(t.sisaKewajiban)}</p>
+                  <p className="font-semibold text-amber-900">{rupiah.format(t.sisaKewajiban)}</p>
                 </div>
               </div>
             </li>

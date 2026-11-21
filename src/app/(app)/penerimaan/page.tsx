@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Ikon from "@/components/Ikon";
 import { JENIS_PENERIMAAN, type JenisPenerimaan } from "@/lib/validasi/penerimaan";
 
 type Pemasok = { idPemasok: number; nama: string; noHp: string | null };
@@ -133,19 +134,22 @@ export default function HalamanPenerimaan() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold">Penerimaan Barang</h1>
+      <h1 className="flex items-center gap-2">
+        <Ikon nama="penerimaan" className="h-6 w-6" />
+        Penerimaan Barang
+      </h1>
 
       {galat && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{galat}</p>}
       {sukses && (
         <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{sukses}</p>
       )}
 
-      <section className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4">
-        <label className="text-sm font-medium">Pemasok</label>
+      <section className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <label className="text-sm font-medium text-zinc-700">Pemasok</label>
         <select
           value={idPemasok}
           onChange={(e) => setIdPemasok(Number(e.target.value))}
-          className="min-h-12 rounded-xl border border-zinc-300 bg-white px-3"
+          className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
         >
           {pemasok.length === 0 && <option value="">Belum ada pemasok</option>}
           {pemasok.map((p) => (
@@ -157,17 +161,17 @@ export default function HalamanPenerimaan() {
 
         <FormPemasokBaru onSelesai={() => setVersiPemasok((v) => v + 1)} />
 
-        <label className="mt-2 text-sm font-medium">Jenis penerimaan</label>
+        <label className="mt-2 text-sm font-medium text-zinc-700">Jenis penerimaan</label>
         <div className="grid grid-cols-3 gap-2">
           {JENIS_PENERIMAAN.map((j) => (
             <button
               key={j}
               type="button"
               onClick={() => setJenis(j)}
-              className={`min-h-12 rounded-xl border text-sm font-medium ${
+              className={`min-h-11 rounded-lg border text-sm font-medium transition-colors ${
                 jenis === j
                   ? "border-emerald-600 bg-emerald-600 text-white"
-                  : "border-zinc-300 bg-white text-zinc-700"
+                  : "border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-100"
               }`}
             >
               {LABEL_JENIS[j]}
@@ -177,12 +181,12 @@ export default function HalamanPenerimaan() {
 
         {jenis === "kredit" && (
           <>
-            <label className="text-sm font-medium">Jatuh tempo (opsional)</label>
+            <label className="text-sm font-medium text-zinc-700">Jatuh tempo (opsional)</label>
             <input
               type="date"
               value={jatuhTempo}
               onChange={(e) => setJatuhTempo(e.target.value)}
-              className="min-h-12 rounded-xl border border-zinc-300 px-3"
+              className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
             />
           </>
         )}
@@ -191,16 +195,19 @@ export default function HalamanPenerimaan() {
       <CariBarang onPilih={tambahBarang} />
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-lg font-semibold">Daftar barang diterima</h2>
+        <h2 className="flex items-center gap-2 text-lg font-bold">
+          <Ikon nama="barang" className="h-5 w-5" />
+          Daftar barang diterima
+        </h2>
         {items.length === 0 ? (
-          <p className="rounded-xl border border-zinc-200 bg-white p-4 text-sm text-zinc-500">
+          <p className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-500">
             Belum ada barang.
           </p>
         ) : (
           <ul className="flex flex-col gap-2">
             {items.map((i) => (
-              <li key={i.kunci} className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-3">
-                <div className="flex items-start justify-between">
+              <li key={i.kunci} className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+                <div className="flex items-start justify-between gap-2">
                   <p className="font-medium">
                     {i.namaItem}{" "}
                     <span className="text-xs text-zinc-500">({i.satuan})</span>
@@ -208,41 +215,42 @@ export default function HalamanPenerimaan() {
                   <button
                     type="button"
                     onClick={() => setItems((lama) => lama.filter((x) => x.kunci !== i.kunci))}
-                    className="min-h-9 rounded-lg px-2 text-sm text-red-600 hover:bg-red-50"
+                    className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
                   >
+                    <Ikon nama="hapus" className="h-4 w-4" />
                     Hapus
                   </button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                   <div className="flex flex-col">
-                    <label className="text-xs text-zinc-500">Jumlah</label>
+                    <label className="text-xs font-medium text-zinc-500">Jumlah</label>
                     <input
                       type="number"
                       min={0}
                       step="0.001"
                       value={i.jumlah}
                       onChange={(e) => ubahItem(i.kunci, { jumlah: Number(e.target.value) })}
-                      className="min-h-11 rounded-lg border border-zinc-300 px-2"
+                      className="min-h-11 rounded-lg border border-zinc-300 bg-white px-2 text-zinc-900"
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className="text-xs text-zinc-500">Harga beli</label>
+                    <label className="text-xs font-medium text-zinc-500">Harga beli</label>
                     <input
                       type="number"
                       min={0}
                       value={i.hargaBeli}
                       onChange={(e) => ubahItem(i.kunci, { hargaBeli: Number(e.target.value) })}
-                      className="min-h-11 rounded-lg border border-zinc-300 px-2"
+                      className="min-h-11 rounded-lg border border-zinc-300 bg-white px-2 text-zinc-900"
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className="text-xs text-zinc-500">Kedaluwarsa</label>
+                    <label className="text-xs font-medium text-zinc-500">Kedaluwarsa</label>
                     <input
                       type="date"
                       value={i.tglKedaluwarsa}
                       onChange={(e) => ubahItem(i.kunci, { tglKedaluwarsa: e.target.value })}
-                      className="min-h-11 rounded-lg border border-zinc-300 px-2"
+                      className="min-h-11 rounded-lg border border-zinc-300 bg-white px-2 text-zinc-900"
                     />
                   </div>
                 </div>
@@ -252,17 +260,21 @@ export default function HalamanPenerimaan() {
         )}
       </section>
 
-      <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4">
-        <div>
-          <p className="text-sm text-zinc-500">Total</p>
-          <p className="text-xl font-bold">{rupiah.format(total)}</p>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <div className="flex items-center gap-3">
+          <Ikon nama="keuangan" className="h-6 w-6 text-emerald-700" />
+          <div>
+            <p className="text-sm text-zinc-500">Total</p>
+            <p className="text-xl font-bold">{rupiah.format(total)}</p>
+          </div>
         </div>
         <button
           type="button"
           onClick={simpan}
           disabled={memuat || items.length === 0}
-          className="min-h-14 rounded-xl bg-emerald-600 px-6 font-semibold text-white disabled:opacity-50"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
         >
+          <Ikon nama="centang" className="h-4 w-4" />
           {memuat ? "Menyimpan…" : "Simpan Penerimaan"}
         </button>
       </div>
@@ -289,23 +301,29 @@ function CariBarang({ onPilih }: { onPilih: (b: Barang) => void }) {
 
   return (
     <section className="flex flex-col gap-2">
-      <input
-        type="search"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Cari barang untuk diterima…"
-        className="min-h-12 rounded-xl border border-zinc-300 bg-white px-4"
-      />
+      <div className="relative">
+        <Ikon
+          nama="cari"
+          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500"
+        />
+        <input
+          type="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Cari barang untuk diterima…"
+          className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-zinc-900"
+        />
+      </div>
       <div className="flex flex-col gap-1">
         {hasil.slice(0, 6).map((b) => (
           <button
             key={b.idBarang}
             type="button"
             onClick={() => onPilih(b)}
-            className="flex min-h-12 items-center justify-between rounded-lg border border-zinc-200 bg-white px-3 text-left text-sm hover:border-emerald-500"
+            className="flex min-h-11 items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-white px-3 text-left text-sm transition-colors hover:border-emerald-500 hover:bg-emerald-50"
           >
-            <span>{b.namaBarang}</span>
-            <span className="text-xs text-zinc-500">
+            <span className="font-medium text-zinc-900">{b.namaBarang}</span>
+            <span className="shrink-0 text-xs text-zinc-500">
               beli terakhir {b.hargaBeliTerakhir === null ? "—" : rupiah.format(b.hargaBeliTerakhir)}
             </span>
           </button>
@@ -353,8 +371,9 @@ function FormPemasokBaru({ onSelesai }: { onSelesai: () => void }) {
       <button
         type="button"
         onClick={() => setBuka(true)}
-        className="min-h-11 self-start rounded-lg border border-emerald-600 px-4 text-sm font-medium text-emerald-700"
+        className="inline-flex min-h-11 self-start items-center justify-center gap-2 rounded-lg border border-emerald-600 bg-white px-4 text-sm font-semibold text-emerald-700 transition-colors hover:bg-emerald-50"
       >
+        <Ikon nama="tambah" className="h-4 w-4" />
         + Tambah pemasok baru
       </button>
     );
@@ -366,29 +385,31 @@ function FormPemasokBaru({ onSelesai }: { onSelesai: () => void }) {
         value={nama}
         onChange={(e) => setNama(e.target.value)}
         placeholder="Nama pemasok"
-        className="min-h-11 rounded-lg border border-zinc-300 px-3"
+        className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
       />
       <input
         value={noHp}
         onChange={(e) => setNoHp(e.target.value)}
         placeholder="No. HP (opsional)"
-        className="min-h-11 rounded-lg border border-zinc-300 px-3"
+        className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
       />
       {galat && <p className="text-sm text-red-700">{galat}</p>}
       <div className="flex gap-2">
         <button
           type="button"
           onClick={() => setBuka(false)}
-          className="min-h-11 flex-1 rounded-lg border border-zinc-300 font-medium"
+          className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
         >
+          <Ikon nama="tutup" className="h-4 w-4" />
           Batal
         </button>
         <button
           type="button"
           onClick={simpan}
           disabled={memuat}
-          className="min-h-11 flex-1 rounded-lg bg-emerald-600 font-semibold text-white disabled:opacity-50"
+          className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
         >
+          <Ikon nama="centang" className="h-4 w-4" />
           {memuat ? "Menyimpan…" : "Simpan"}
         </button>
       </div>

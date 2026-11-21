@@ -12,6 +12,8 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@neon/config": "^1.14.5",
+    "@neon/env": "^2.1.8",
     "@zxing/browser": "^0.2.1",
     "bcryptjs": "^3.0.3",
     "dexie": "^4.4.7",

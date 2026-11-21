@@ -44,3 +44,4 @@ next-env.d.ts
 # artefak uji black-box lokal (tidak di-commit)
 /.uji/
 /cookies.txt
+.neon

@@ -22,9 +22,20 @@ export async function GET(req: NextRequest) {
     const limitDiminta = Number(req.nextUrl.searchParams.get("limit") ?? 50);
     const limit = Number.isFinite(limitDiminta) ? Math.min(Math.max(limitDiminta, 1), 200) : 50;
 
+    // PENTING: Barcode dicari dengan exact match dulu, baru fallback ke ILIKE untuk nama
+    // Ini mempertahankan nol di depan (0899...) dan mendukung pencarian partial nama
     const pola = `%${q}%`;
     const syarat: (SQL | undefined)[] = [];
-    if (q) syarat.push(or(ilike(barang.namaBarang, pola), ilike(barang.kodeBarcode, pola)));
+    if (q) {
+      // Prioritas: exact match barcode, kemudian partial match nama atau barcode
+      syarat.push(
+        or(
+          eq(barang.kodeBarcode, q), // Exact match untuk barcode (termasuk nol di depan)
+          ilike(barang.namaBarang, pola), // Partial match untuk nama
+          ilike(barang.kodeBarcode, pola) // Partial match untuk barcode
+        )
+      );
+    }
     // Jalur "Favorit" di layar Jual (F03) memakai penyaring ini.
     if (hanyaFavorit) syarat.push(eq(barang.favorit, true));
     const kondisi = syarat.length > 0 ? and(...syarat) : undefined;

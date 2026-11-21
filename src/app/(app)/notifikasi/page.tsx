@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Ikon from "@/components/Ikon";
 
 /**
  * Notifikasi (F10 / FR-08, BR-04): stok ≤ minimum, hampir kedaluwarsa,
@@ -156,10 +157,10 @@ function Kartu({
 }) {
   if (jumlah === 0) return null;
   return (
-    <section className={`rounded-xl border p-4 ${warna}`}>
-      <div className="flex items-center gap-2">
-        <IkonPeringatan />
-        <h2 className={`font-semibold ${warnaJudul}`}>
+    <section className={`rounded-xl border p-5 shadow-sm ${warna}`}>
+      <div className={`flex items-center gap-2 ${warnaJudul}`}>
+        <Ikon nama="peringatan" className="h-5 w-5 shrink-0" />
+        <h2 className={`text-lg font-bold ${warnaJudul}`}>
           {judul} ({jumlah})
         </h2>
       </div>
@@ -170,30 +171,9 @@ function Kartu({
 
 function ItemBaris({ kiri, kanan }: { kiri: string; kanan: string }) {
   return (
-    <li className="flex flex-wrap items-center justify-between gap-1 rounded-lg bg-white/70 px-3 py-2 text-sm">
+    <li className="flex flex-wrap items-center justify-between gap-1 rounded-lg bg-white/80 px-3 py-2 text-sm">
       <span className="font-medium text-zinc-800">{kiri}</span>
       <span className="text-zinc-600">{kanan}</span>
     </li>
-  );
-}
-
-function IkonPeringatan() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className="shrink-0"
-    >
-      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-      <line x1="12" y1="9" x2="12" y2="13" />
-      <line x1="12" y1="17" x2="12.01" y2="17" />
-    </svg>
   );
 }

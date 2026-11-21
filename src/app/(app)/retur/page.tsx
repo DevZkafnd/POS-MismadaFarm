@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Ikon from "@/components/Ikon";
 import { JENIS_RETUR, LABEL_JENIS_RETUR, nilaiRetur, type JenisRetur } from "@/lib/domain/retur";
 
 /**
@@ -47,7 +48,10 @@ export default function HalamanRetur() {
   const [versi, setVersi] = useState(0);
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold">Retur</h1>
+      <div className="flex items-center gap-2">
+        <Ikon nama="retur" className="h-6 w-6 text-emerald-700" />
+        <h1 className="text-xl font-bold">Retur</h1>
+      </div>
       <FormRetur key={`form-${versi}`} onSukses={() => setVersi((v) => v + 1)} />
       <DaftarRetur key={`daftar-${versi}`} />
     </div>
@@ -153,18 +157,19 @@ function FormRetur({ onSukses }: { onSukses: () => void }) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-3">
         {JENIS_RETUR.map((j) => (
           <button
             key={j}
             type="button"
             onClick={() => gantiJenis(j)}
-            className={`min-h-12 rounded-xl border text-sm font-medium ${
+            className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-semibold transition-colors ${
               jenis === j
                 ? "border-emerald-600 bg-emerald-600 text-white"
-                : "border-zinc-300 bg-white text-zinc-700"
+                : "border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-100"
             }`}
           >
+            <Ikon nama="retur" className="h-4 w-4" />
             {LABEL_JENIS_RETUR[j]}
           </button>
         ))}
@@ -173,19 +178,24 @@ function FormRetur({ onSukses }: { onSukses: () => void }) {
       <CariBarang onPilih={pilihBarang} />
 
       {barang && (
-        <section className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4">
-          <div>
-            <p className="font-medium">{barang.namaBarang}</p>
-            <p className="text-xs text-zinc-500">satuan {barang.satuan}</p>
+        <section className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
+              <Ikon nama="barang" className="h-5 w-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="font-semibold text-zinc-900">{barang.namaBarang}</p>
+              <p className="text-xs text-zinc-500">satuan {barang.satuan}</p>
+            </div>
           </div>
 
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-zinc-700">
             {jenis === "pelanggan" ? "Item penjualan asal" : "Penerimaan asal"}
           </label>
           <select
             value={idSumber}
             onChange={(e) => setIdSumber(e.target.value)}
-            className="min-h-12 rounded-xl border border-zinc-300 bg-white px-3"
+            className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
           >
             {jenis === "pemasok" && <option value="">Tanpa rujukan (pakai harga beli terakhir)</option>}
             {jenis === "pelanggan" && sumber.length === 0 && (
@@ -202,50 +212,61 @@ function FormRetur({ onSukses }: { onSukses: () => void }) {
           </select>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col">
-              <label className="text-sm font-medium">Jumlah</label>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-zinc-700">Jumlah</label>
               <input
                 type="number"
                 min={0}
                 step="0.001"
                 value={jumlah}
                 onChange={(e) => setJumlah(e.target.value)}
-                className="min-h-12 rounded-xl border border-zinc-300 px-3"
+                className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
               />
             </div>
-            <div className="flex flex-col">
-              <label className="text-sm font-medium">Harga satuan</label>
-              <p className="min-h-12 rounded-xl bg-zinc-100 px-3 py-3 font-medium">
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-zinc-700">Harga satuan</label>
+              <p className="flex min-h-11 items-center rounded-lg bg-zinc-100 px-3 font-semibold text-zinc-900">
                 {rupiah.format(hargaSatuan)}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-3 py-2">
+          <div className="flex items-center justify-between rounded-lg bg-emerald-50 px-3 py-2.5">
             <span className="text-sm text-zinc-600">Nilai retur</span>
-            <span className="font-bold">{rupiah.format(nilai)}</span>
+            <span className="font-bold text-emerald-800">{rupiah.format(nilai)}</span>
           </div>
 
-          <label className="text-sm font-medium">Alasan retur (wajib)</label>
+          <label className="text-sm font-medium text-zinc-700">Alasan retur (wajib)</label>
           <textarea
             value={alasan}
             onChange={(e) => setAlasan(e.target.value)}
             rows={2}
             placeholder="mis. barang rusak, salah kirim"
-            className="rounded-xl border border-zinc-300 px-3 py-2"
+            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900"
           />
         </section>
       )}
 
-      {galat && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{galat}</p>}
-      {pesan && <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{pesan}</p>}
+      {galat && (
+        <p className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-800">
+          <Ikon nama="peringatan" className="h-4 w-4 shrink-0" />
+          {galat}
+        </p>
+      )}
+      {pesan && (
+        <p className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800">
+          <Ikon nama="centang" className="h-4 w-4 shrink-0" />
+          {pesan}
+        </p>
+      )}
 
       <button
         type="button"
         onClick={() => void simpan()}
         disabled={memuat || !barang}
-        className="min-h-14 rounded-xl bg-emerald-600 font-semibold text-white disabled:opacity-50"
+        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
       >
+        <Ikon nama="centang" className="h-5 w-5" />
         {memuat ? "Menyimpan…" : "Simpan Retur"}
       </button>
     </>
@@ -271,13 +292,19 @@ function CariBarang({ onPilih }: { onPilih: (b: Barang) => void }) {
 
   return (
     <section className="flex flex-col gap-2">
-      <input
-        type="search"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Cari barang untuk diretur…"
-        className="min-h-12 rounded-xl border border-zinc-300 bg-white px-4"
-      />
+      <div className="relative">
+        <Ikon
+          nama="cari"
+          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500"
+        />
+        <input
+          type="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Cari barang untuk diretur…"
+          className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-zinc-900"
+        />
+      </div>
       <div className="flex flex-col gap-1">
         {hasil
           .filter((b) => b.tipe !== "jasa")
@@ -287,10 +314,10 @@ function CariBarang({ onPilih }: { onPilih: (b: Barang) => void }) {
               key={b.idBarang}
               type="button"
               onClick={() => onPilih(b)}
-              className="flex min-h-12 items-center justify-between rounded-lg border border-zinc-200 bg-white px-3 text-left text-sm hover:border-emerald-500"
+              className="flex min-h-11 items-center justify-between gap-3 rounded-lg border border-zinc-200 bg-white px-3 text-left text-sm transition-colors hover:border-emerald-500 hover:bg-emerald-50"
             >
-              <span>{b.namaBarang}</span>
-              <span className="text-xs text-zinc-500">satuan {b.satuan}</span>
+              <span className="font-medium text-zinc-900">{b.namaBarang}</span>
+              <span className="shrink-0 text-xs text-zinc-500">satuan {b.satuan}</span>
             </button>
           ))}
       </div>
@@ -325,13 +352,22 @@ function DaftarRetur() {
   }, []);
 
   if (memuat) return <p className="text-sm text-zinc-500">Memuat…</p>;
-  if (galat) return <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{galat}</p>;
+  if (galat)
+    return (
+      <p className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-800">
+        <Ikon nama="peringatan" className="h-4 w-4 shrink-0" />
+        {galat}
+      </p>
+    );
 
   return (
-    <section className="flex flex-col gap-2">
-      <h2 className="text-lg font-semibold">Riwayat Retur</h2>
+    <section className="flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <Ikon nama="retur" className="h-5 w-5 text-emerald-700" />
+        <h2 className="text-lg font-bold">Riwayat Retur</h2>
+      </div>
       {daftar.length === 0 ? (
-        <p className="rounded-xl border border-zinc-200 bg-white p-4 text-sm text-zinc-500">
+        <p className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-500 shadow-sm">
           Belum ada retur.
         </p>
       ) : (
@@ -339,10 +375,10 @@ function DaftarRetur() {
           {daftar.map((r) => (
             <li
               key={r.idRetur}
-              className="flex items-center justify-between gap-2 rounded-xl border border-zinc-200 bg-white p-3"
+              className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm"
             >
-              <div>
-                <p className="font-medium">
+              <div className="min-w-0">
+                <p className="font-semibold text-zinc-900">
                   {r.namaBarang}{" "}
                   <span className="text-xs text-zinc-500">
                     {LABEL_JENIS_RETUR[r.jenis]}
@@ -352,7 +388,7 @@ function DaftarRetur() {
                   {r.jumlah} {r.satuan} · {r.tanggal} · {r.alasan}
                 </p>
               </div>
-              <span className="font-semibold">{rupiah.format(r.nilai)}</span>
+              <span className="shrink-0 font-semibold text-emerald-800">{rupiah.format(r.nilai)}</span>
             </li>
           ))}
         </ul>

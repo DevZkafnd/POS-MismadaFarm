@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Ikon from "@/components/Ikon";
 
 type StatusKasbon = "belum" | "sebagian" | "lunas";
 
@@ -103,7 +104,7 @@ function DaftarKasbon({ onPilih }: { onPilih: (k: Kasbon) => void }) {
           {daftar.map((k) => (
             <li
               key={k.idPiutang}
-              className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4"
+              className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
@@ -121,14 +122,15 @@ function DaftarKasbon({ onPilih }: { onPilih: (k: Kasbon) => void }) {
                 <div>
                   <p className="text-xs text-zinc-500">Sisa kasbon</p>
                   <p className="text-lg font-bold">{rupiah.format(k.saldo)}</p>
-                  <p className="text-xs text-zinc-400">Awal {rupiah.format(k.nilaiAwal)}</p>
+                  <p className="text-xs text-zinc-500">Awal {rupiah.format(k.nilaiAwal)}</p>
                 </div>
                 {k.status !== "lunas" && (
                   <button
                     type="button"
                     onClick={() => onPilih(k)}
-                    className="min-h-11 rounded-xl bg-emerald-600 px-4 font-medium text-white"
+                    className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
                   >
+                    <Ikon nama="centang" className="h-4 w-4" />
                     Catat Bayar
                   </button>
                 )}
@@ -183,28 +185,32 @@ function DialogBayarKasbon({
 
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-5">
-        <h2 className="text-lg font-bold">Catat Bayar Kasbon</h2>
+      <div className="w-full max-w-sm rounded-xl border border-zinc-200 bg-white p-5 shadow-xl">
+        <h2 className="flex items-center gap-2 text-lg font-bold">
+          <Ikon nama="kasbon" className="h-5 w-5" />
+          Catat Bayar Kasbon
+        </h2>
         <p className="mt-1 text-sm text-zinc-500">
           {kasbon.namaPelanggan} · sisa {rupiah.format(kasbon.saldo)}
         </p>
 
-        <label className="mt-4 block text-sm font-medium">Jumlah dibayar (Rp)</label>
+        <label className="mt-4 block text-sm font-medium text-zinc-700">Jumlah dibayar (Rp)</label>
         <input
           type="number"
           inputMode="numeric"
           min={0}
           value={jumlah}
           onChange={(e) => setJumlah(e.target.value)}
-          className="mt-1 min-h-12 w-full rounded-xl border border-zinc-300 px-3 text-lg"
+          className="mt-1 min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-lg text-zinc-900"
         />
 
         <div className="mt-2 flex gap-2">
           <button
             type="button"
             onClick={() => setJumlah(String(kasbon.saldo))}
-            className="min-h-10 rounded-lg border border-zinc-300 px-3 text-sm"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
           >
+            <Ikon nama="centang" className="h-4 w-4" />
             Lunasi
           </button>
         </div>
@@ -215,16 +221,18 @@ function DialogBayarKasbon({
           <button
             type="button"
             onClick={onTutup}
-            className="min-h-12 flex-1 rounded-xl border border-zinc-300 font-medium"
+            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
           >
+            <Ikon nama="tutup" className="h-4 w-4" />
             Batal
           </button>
           <button
             type="button"
             onClick={() => void simpan()}
             disabled={memuat || jumlah === ""}
-            className="min-h-12 flex-1 rounded-xl bg-emerald-600 font-semibold text-white disabled:opacity-50"
+            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
           >
+            <Ikon nama="centang" className="h-4 w-4" />
             {memuat ? "Menyimpan…" : "Simpan"}
           </button>
         </div>

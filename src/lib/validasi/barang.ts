@@ -130,6 +130,8 @@ export function validasiBarisBarang(
   if (!namaBarang) galat.push("nama_barang kosong");
 
   const barcodeRaw = (row.kode_barcode ?? "").trim();
+  // PENTING: Pertahankan nol di depan pada barcode (mis. 0899...)
+  // Barcode selalu disimpan sebagai string, bukan angka
   const kodeBarcode = barcodeRaw === "" ? null : barcodeRaw;
 
   const liniRaw = (row.lini ?? "").trim().toLowerCase();
@@ -196,6 +198,7 @@ export function validasiBarisBarang(
 export function cariBarcodeDuplikat(rows: Record<string, string>[]): Set<string> {
   const hitung = new Map<string, number>();
   for (const row of rows) {
+    // PENTING: Pertahankan nol di depan, simpan sebagai string
     const barcode = (row.kode_barcode ?? "").trim();
     if (barcode === "") continue;
     hitung.set(barcode, (hitung.get(barcode) ?? 0) + 1);

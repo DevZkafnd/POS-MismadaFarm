@@ -6,19 +6,28 @@ const DAFTAR: BarangRingkas[] = [
     idBarang: 1,
     kodeBarcode: "8991000000001",
     namaBarang: "Beras Premium 5kg",
-    satuan: "sak",
+    satuan: "karung",
     tipe: "barang",
-    hargaJualAktif: 66000,
+    hargaJualAktif: 68000,
     idLini: 1,
   },
   {
     idBarang: 2,
+    kodeBarcode: "0899000000001", // Barcode dengan nol di depan
+    namaBarang: "Produk dengan nol di depan",
+    satuan: "pcs",
+    tipe: "barang",
+    hargaJualAktif: 15000,
+    idLini: 1,
+  },
+  {
+    idBarang: 3,
     kodeBarcode: null,
     namaBarang: "Jasa Sewa Traktor",
     satuan: "hari",
     tipe: "jasa",
-    hargaJualAktif: 350000,
-    idLini: 4,
+    hargaJualAktif: 500000,
+    idLini: 2,
   },
 ];
 
@@ -45,9 +54,27 @@ describe("cocokkanBarcode", () => {
     expect(cocokkanBarcode("   ", DAFTAR).jenis).toBe("kode_kosong");
   });
 
+  it("mempertahankan nol di depan barcode", () => {
+    const hasil = cocokkanBarcode("0899000000001", DAFTAR);
+    expect(hasil.jenis).toBe("ditemukan");
+    if (hasil.jenis !== "ditemukan") return;
+    expect(hasil.barang.namaBarang).toBe("Produk dengan nol di depan");
+    expect(hasil.barang.kodeBarcode).toBe("0899000000001");
+  });
+
+  it("tidak cocok jika nol di depan hilang", () => {
+    // Barcode 0899000000001 tidak cocok dengan 899000000001 (nol hilang)
+    const hasil = cocokkanBarcode("899000000001", DAFTAR);
+    expect(hasil.jenis).toBe("tidak_ditemukan");
+  });
+
   it("memberi pesan siap tampil untuk tiap hasil", () => {
-    expect(pesanHasilBarcode({ jenis: "kode_kosong" })).toMatch(/tidak terbaca/);
-    expect(pesanHasilBarcode({ jenis: "tidak_ditemukan", kode: "123" })).toMatch(/belum terdaftar/);
-    expect(pesanHasilBarcode({ jenis: "ditemukan", barang: DAFTAR[0] })).toMatch(/Ditemukan/);
+    expect(pesanHasilBarcode({ jenis: "ditemukan", barang: DAFTAR[0] })).toContain(
+      "Beras Premium",
+    );
+    expect(pesanHasilBarcode({ jenis: "tidak_ditemukan", kode: "123" })).toContain(
+      "belum terdaftar",
+    );
+    expect(pesanHasilBarcode({ jenis: "kode_kosong" })).toContain("tidak terbaca");
   });
 });

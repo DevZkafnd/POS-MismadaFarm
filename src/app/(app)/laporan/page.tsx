@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Ikon from "@/components/Ikon";
 import {
   bikinCsvLaporan,
   bikinExcel,
@@ -211,7 +212,7 @@ export default function HalamanLaporan() {
 
       {!memuat && data && (
         <>
-          <section className="grid grid-cols-2 gap-3">
+          <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Kotak label="Omzet" nilai={rupiah.format(data.konsolidasi.omzet)} />
             <Kotak label="Laba kotor" nilai={rupiah.format(data.konsolidasi.labaKotor)} />
             <Kotak label="Pengeluaran" nilai={rupiah.format(data.konsolidasi.pengeluaran)} />
@@ -317,9 +318,12 @@ function Kotak({
 
 function BagianTabel({ judul, children }: { judul: string; children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-2">
-      <h2 className="font-semibold">{judul}</h2>
-      <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white">
+    <section className="flex flex-col gap-3">
+      <h2 className="flex items-center gap-2 text-lg font-bold">
+        <Ikon nama="laporan" className="h-5 w-5 text-emerald-700" />
+        {judul}
+      </h2>
+      <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm">
         <table className="w-full min-w-[640px] text-left text-sm">{children}</table>
       </div>
     </section>

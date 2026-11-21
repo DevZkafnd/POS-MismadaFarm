@@ -58,9 +58,22 @@ export default function PemindaiBarcode({
 
       try {
         if (Konstruktor) {
-          const format = await Konstruktor.getSupportedFormats?.().catch(() => undefined);
+          // Format barcode yang didukung: EAN-13, EAN-8, UPC-A, Code 128, QR Code
+          const formatDiminta = ['ean_13', 'ean_8', 'upc_a', 'code_128', 'qr_code'];
+          let formatAktif = formatDiminta;
+          
+          try {
+            const formatTersedia = await Konstruktor.getSupportedFormats?.();
+            if (formatTersedia && formatTersedia.length > 0) {
+              // Gunakan format yang diminta dan tersedia
+              formatAktif = formatDiminta.filter(f => formatTersedia.includes(f));
+            }
+          } catch {
+            // Fallback: pakai semua format yang diminta
+          }
+          
           const pendeteksi = new Konstruktor(
-            format && format.length > 0 ? { formats: format } : undefined,
+            formatAktif.length > 0 ? { formats: formatAktif } : undefined,
           );
 
           stream = await navigator.mediaDevices.getUserMedia({
@@ -94,9 +107,20 @@ export default function PemindaiBarcode({
         setPakaiCadangan(true);
         const { BrowserMultiFormatReader } = await import("@zxing/browser");
         const pembaca = new BrowserMultiFormatReader();
-        const kontrol = await pembaca.decodeFromVideoDevice(undefined, video, (hasil) => {
-          const kode = hasil?.getText()?.trim();
-          if (kode) kirim(kode);
+        
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+        });
+        if (dibatalkan) return;
+        video.srcObject = stream;
+        await video.play();
+        if (dibatalkan) return;
+        
+        const kontrol = await pembaca.decodeFromVideoElement(video, (hasil) => {
+          if (hasil) {
+            const kode = hasil.getText()?.trim();
+            if (kode) kirim(kode);
+          }
         });
         if (dibatalkan) {
           kontrol.stop();
@@ -125,11 +149,11 @@ export default function PemindaiBarcode({
     <div className="fixed inset-0 z-30 flex flex-col bg-black/80 p-4">
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col gap-3">
         <div className="flex items-center justify-between text-white">
-          <h2 className="text-lg font-semibold">Pindai Barcode</h2>
+          <h2 className="text-lg font-bold text-white">Pindai Barcode</h2>
           <button
             type="button"
             onClick={onTutup}
-            className="min-h-11 rounded-lg bg-white/20 px-4 text-sm font-medium"
+            className="min-h-11 rounded-lg border border-white/30 bg-white/20 px-4 text-sm font-semibold text-white transition-colors hover:bg-white/30"
           >
             Tutup
           </button>
@@ -151,7 +175,7 @@ export default function PemindaiBarcode({
           )}
         </div>
 
-        <p className="text-center text-sm text-white/80">
+        <p className="text-center text-sm text-white/90">
           {galat ??
             (pakaiCadangan
               ? "Memakai pemindai cadangan (ZXing)."

@@ -23,12 +23,18 @@ export type HasilCocokBarcode =
 /**
  * Cari barang yang barcodenya sama persis dengan hasil pindai.
  * Barcode kosong/whitespace dianggap tidak sah (kode_kosong).
+ * PENTING: Pencocokan case-sensitive dan mempertahankan nol di depan.
  */
 export function cocokkanBarcode(kodeMentah: string, daftar: BarangRingkas[]): HasilCocokBarcode {
   const kode = (kodeMentah ?? "").trim();
   if (kode === "") return { jenis: "kode_kosong" };
 
-  const barang = daftar.find((b) => (b.kodeBarcode ?? "").trim() === kode);
+  // Cocokkan string barcode secara persis (termasuk nol di depan)
+  const barang = daftar.find((b) => {
+    const barcodeBarang = (b.kodeBarcode ?? "").trim();
+    return barcodeBarang === kode;
+  });
+  
   if (!barang) return { jenis: "tidak_ditemukan", kode };
   return { jenis: "ditemukan", barang };
 }

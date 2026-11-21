@@ -1,26 +1,85 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Design system — POS Mismada Farm
+ * Palet: hijau tua (emerald-800/900), hijau (emerald-600), hijau muda (emerald-50/100), putih.
+ * Tema dikunci ke terang (`color-scheme: light`) karena seluruh komponen dirancang untuk latar
+ * terang. Sebelumnya mode gelap otomatis (prefers-color-scheme) mengubah latar jadi hampir hitam
+ * sehingga teks abu/oranye jadi tidak terbaca.
+ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/*
+ * Skala netral disesuaikan: sedikit kehijauan dan kontras memadai (≥ 4.5:1) di atas latar terang.
+ * Nilai ini dipakai lewat kelas `text-zinc-*` / `border-zinc-*` yang sudah ada di seluruh halaman,
+ * sehingga teks abu-abu yang tadinya pucat otomatis menjadi terbaca.
+ */
+@theme {
+  --color-zinc-300: #b8c6bf;
+  --color-zinc-400: #5f6f67;
+  --color-zinc-500: #45544c;
+  --color-zinc-600: #33413a;
+  --color-zinc-700: #1f2c26;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: #f2fbf5;
+    color: #24322b;
+    font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+      sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: #14532d;
+    font-weight: 700;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: clamp(1.375rem, 1.1rem + 1.4vw, 1.875rem);
+  }
+
+  h2 {
+    font-size: clamp(1.175rem, 1rem + 0.8vw, 1.375rem);
+  }
+
+  h3 {
+    font-size: 1.0625rem;
+  }
+
+  :focus-visible {
+    outline: 2px solid #16a34a;
+    outline-offset: 2px;
+    border-radius: 0.375rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  /* Sembunyikan scrollbar pada deretan menu yang bisa digeser horizontal (mobile). */
+  .tanpa-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .tanpa-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }

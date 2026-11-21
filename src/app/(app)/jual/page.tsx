@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Ikon, { type NamaIkon } from "@/components/Ikon";
 import PemindaiBarcode from "@/components/PemindaiBarcode";
 import { cocokkanBarcode, pesanHasilBarcode, type BarangRingkas } from "@/lib/domain/barcode";
 import { hitungKembalian, hitungTotal } from "@/lib/domain/stok";
@@ -40,6 +41,12 @@ const LABEL_JALUR: Record<JalurInput, string> = {
   scan: "Pindai Barcode",
   favorit: "Favorit",
   manual: "Harga Manual",
+};
+
+const IKON_JALUR: Record<JalurInput, NamaIkon> = {
+  scan: "pindai",
+  favorit: "centang",
+  manual: "tambah",
 };
 
 function kunciItem(item: { idBarang: number | null; hargaSatuan: number; jalurInput: JalurInput }): string {
@@ -105,7 +112,10 @@ export default function HalamanJual() {
 
   return (
     <div className="flex flex-col gap-4 pb-40">
-      <h1 className="text-xl font-bold">Jual</h1>
+      <h1 className="flex items-center gap-2 text-xl font-bold">
+        <Ikon nama="jual" className="h-6 w-6" />
+        Jual
+      </h1>
 
       <div className="grid grid-cols-3 gap-2">
         {JALUR_INPUT.map((j) => (
@@ -113,20 +123,29 @@ export default function HalamanJual() {
             key={j}
             type="button"
             onClick={() => setJalur(j)}
-            className={`min-h-12 rounded-xl border px-2 text-sm font-medium ${
+            className={`inline-flex min-h-11 min-w-0 items-center justify-center gap-2 rounded-lg border px-2 text-center text-sm font-semibold transition-colors ${
               jalur === j
                 ? "border-emerald-600 bg-emerald-600 text-white"
-                : "border-zinc-300 bg-white text-zinc-700"
+                : "border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-100"
             }`}
           >
+            <Ikon nama={IKON_JALUR[j]} className="h-4 w-4 shrink-0" />
             {LABEL_JALUR[j]}
           </button>
         ))}
       </div>
 
-      {galat && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{galat}</p>}
+      {galat && (
+        <p className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          <Ikon nama="peringatan" className="h-4 w-4 shrink-0" />
+          {galat}
+        </p>
+      )}
       {pesan && (
-        <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{pesan}</p>
+        <p className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800">
+          <Ikon nama="centang" className="h-4 w-4 shrink-0" />
+          {pesan}
+        </p>
       )}
 
       {jalur === "scan" && <JalurScan onTambah={tambahBarang} setGalat={setGalat} />}
@@ -189,12 +208,13 @@ function JalurScan({
   );
 
   return (
-    <section className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4">
+    <section className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
       <button
         type="button"
         onClick={() => setBukaKamera(true)}
-        className="min-h-14 rounded-xl bg-emerald-600 text-base font-semibold text-white"
+        className="inline-flex min-h-14 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-base font-semibold text-white transition-colors hover:bg-emerald-700"
       >
+        <Ikon nama="pindai" className="h-5 w-5" />
         Buka Kamera
       </button>
 
@@ -206,14 +226,15 @@ function JalurScan({
             if (e.key === "Enter") void cari(kode);
           }}
           placeholder="Ketik / tempel kode barcode…"
-          className="min-h-12 flex-1 rounded-xl border border-zinc-300 px-3"
+          className="min-h-11 min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
         />
         <button
           type="button"
           onClick={() => void cari(kode)}
           disabled={mencari}
-          className="min-h-12 rounded-xl border border-emerald-600 px-4 font-medium text-emerald-700 disabled:opacity-50"
+          className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 disabled:opacity-50"
         >
+          <Ikon nama="cari" className="h-4 w-4" />
           {mencari ? "…" : "Cari"}
         </button>
       </div>
@@ -267,7 +288,7 @@ function JalurFavorit({
   return (
     <section className="flex flex-col gap-2">
       {daftar.length === 0 && (
-        <p className="rounded-xl border border-zinc-200 bg-white p-4 text-sm text-zinc-500">
+        <p className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-500 shadow-sm">
           Belum ada barang favorit. Tandai favorit dari data master.
         </p>
       )}
@@ -276,15 +297,20 @@ function JalurFavorit({
           key={b.idBarang}
           type="button"
           onClick={() => onTambah(b, "favorit")}
-          className="flex min-h-14 items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left hover:border-emerald-500"
+          className="flex min-h-14 items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left shadow-sm transition-colors hover:border-emerald-500 hover:bg-emerald-50"
         >
-          <span>
-            <span className="block font-medium">{b.namaBarang}</span>
-            <span className="text-xs text-zinc-500">
-              {b.namaLini} · stok {b.tipe === "jasa" ? "—" : `${b.stokTotal} ${b.satuan}`}
+          <span className="flex min-w-0 items-center gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
+              <Ikon nama="barang" className="h-5 w-5" />
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate font-medium">{b.namaBarang}</span>
+              <span className="text-xs text-zinc-500">
+                {b.namaLini} · stok {b.tipe === "jasa" ? "—" : `${b.stokTotal} ${b.satuan}`}
+              </span>
             </span>
           </span>
-          <span className="font-semibold">{rupiah.format(b.hargaJualAktif)}</span>
+          <span className="shrink-0 font-semibold">{rupiah.format(b.hargaJualAktif)}</span>
         </button>
       ))}
     </section>
@@ -343,46 +369,50 @@ function JalurManual({
   };
 
   return (
-    <section className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4">
+    <section className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
       <p className="text-sm text-zinc-500">
         Harga manual hanya berlaku untuk transaksi ini dan tidak mengubah harga master.
       </p>
 
-      <label className="text-sm font-medium">Nama item</label>
-      <input
-        value={nama}
-        onChange={(e) => setNama(e.target.value)}
-        placeholder="mis. Plastik bening 1 kg"
-        className="min-h-12 rounded-xl border border-zinc-300 px-3"
-      />
+      <div className="flex flex-col gap-1.5">
+        <label className="text-sm font-medium text-zinc-700">Nama item</label>
+        <input
+          value={nama}
+          onChange={(e) => setNama(e.target.value)}
+          placeholder="mis. Plastik bening 1 kg"
+          className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
+        />
+      </div>
 
-      <label className="text-sm font-medium">Lini usaha (F07)</label>
-      <select
-        value={idLini}
-        onChange={(e) => setIdLini(Number(e.target.value))}
-        className="min-h-12 rounded-xl border border-zinc-300 bg-white px-3"
-      >
-        {lini.map((l) => (
-          <option key={l.idLini} value={l.idLini}>
-            {l.namaLini}
-          </option>
-        ))}
-      </select>
+      <div className="flex flex-col gap-1.5">
+        <label className="text-sm font-medium text-zinc-700">Lini usaha (F07)</label>
+        <select
+          value={idLini}
+          onChange={(e) => setIdLini(Number(e.target.value))}
+          className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
+        >
+          {lini.map((l) => (
+            <option key={l.idLini} value={l.idLini}>
+              {l.namaLini}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="flex flex-col">
-          <label className="text-sm font-medium">Harga (Rp)</label>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-zinc-700">Harga (Rp)</label>
           <input
             type="number"
             inputMode="numeric"
             min={0}
             value={harga}
             onChange={(e) => setHarga(e.target.value)}
-            className="min-h-12 rounded-xl border border-zinc-300 px-3"
+            className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
           />
         </div>
-        <div className="flex flex-col">
-          <label className="text-sm font-medium">Jumlah</label>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-zinc-700">Jumlah</label>
           <input
             type="number"
             inputMode="decimal"
@@ -390,18 +420,24 @@ function JalurManual({
             step="0.001"
             value={jumlah}
             onChange={(e) => setJumlah(e.target.value)}
-            className="min-h-12 rounded-xl border border-zinc-300 px-3"
+            className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
           />
         </div>
       </div>
 
-      {galat && <p className="text-sm text-red-700">{galat}</p>}
+      {galat && (
+        <p className="flex items-center gap-2 text-sm font-medium text-red-700">
+          <Ikon nama="peringatan" className="h-4 w-4 shrink-0" />
+          {galat}
+        </p>
+      )}
 
       <button
         type="button"
         onClick={simpan}
-        className="min-h-12 rounded-xl bg-emerald-600 font-semibold text-white"
+        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
       >
+        <Ikon nama="tambah" className="h-4 w-4" />
         Tambah ke Keranjang
       </button>
     </section>
@@ -434,9 +470,12 @@ function Keranjang({
   return (
     <>
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">Keranjang</h2>
+        <h2 className="flex items-center gap-2 text-lg font-bold">
+          <Ikon nama="jual" className="h-5 w-5" />
+          Keranjang
+        </h2>
         {keranjang.length === 0 ? (
-          <p className="rounded-xl border border-zinc-200 bg-white p-4 text-sm text-zinc-500">
+          <p className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-500 shadow-sm">
             Belum ada item.
           </p>
         ) : (
@@ -444,10 +483,10 @@ function Keranjang({
             {keranjang.map((i) => (
               <li
                 key={i.kunci}
-                className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-3"
+                className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-medium">{i.namaItem}</p>
                     <p className="text-xs text-zinc-500">
                       {LABEL_JALUR[i.jalurInput]}
@@ -457,8 +496,9 @@ function Keranjang({
                   <button
                     type="button"
                     onClick={() => onHapus(i.kunci)}
-                    className="min-h-9 rounded-lg px-2 text-sm text-red-600 hover:bg-red-50"
+                    className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 text-sm font-medium text-red-700 transition-colors hover:bg-red-100"
                   >
+                    <Ikon nama="hapus" className="h-4 w-4" />
                     Hapus
                   </button>
                 </div>
@@ -468,7 +508,7 @@ function Keranjang({
                     <button
                       type="button"
                       onClick={() => onUbahJumlah(i.kunci, -1)}
-                      className="min-h-10 min-w-10 rounded-lg border border-zinc-300 text-lg"
+                      className="inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg border border-zinc-300 bg-white text-lg text-zinc-700 transition-colors hover:bg-zinc-100"
                     >
                       −
                     </button>
@@ -476,7 +516,7 @@ function Keranjang({
                     <button
                       type="button"
                       onClick={() => onUbahJumlah(i.kunci, 1)}
-                      className="min-h-10 min-w-10 rounded-lg border border-zinc-300 text-lg"
+                      className="inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg border border-zinc-300 bg-white text-lg text-zinc-700 transition-colors hover:bg-zinc-100"
                     >
                       +
                     </button>
@@ -488,7 +528,7 @@ function Keranjang({
                       min={0}
                       value={i.hargaSatuan}
                       onChange={(e) => onUbahHarga(i.kunci, Number(e.target.value))}
-                      className="min-h-10 w-28 rounded-lg border border-zinc-300 px-2"
+                      className="min-h-10 w-28 rounded-lg border border-zinc-300 bg-white px-2 text-zinc-900"
                     />
                   ) : (
                     <span className="text-sm text-zinc-600">
@@ -502,7 +542,8 @@ function Keranjang({
                 </div>
 
                 {i.stokTotal !== null && i.jumlah > i.stokTotal && (
-                  <p className="text-xs text-amber-700">
+                  <p className="flex items-center gap-1.5 text-xs font-medium text-amber-700">
+                    <Ikon nama="peringatan" className="h-3.5 w-3.5 shrink-0" />
                     Stok tercatat hanya {i.stokTotal} {i.satuan}.
                   </p>
                 )}
@@ -522,8 +563,9 @@ function Keranjang({
             type="button"
             disabled={keranjang.length === 0}
             onClick={() => setBukaBayar(true)}
-            className="min-h-14 rounded-xl bg-emerald-600 px-6 text-lg font-semibold text-white disabled:opacity-50"
+            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 text-lg font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
           >
+            <Ikon nama="keuangan" className="h-5 w-5" />
             Bayar
           </button>
         </div>
@@ -687,8 +729,11 @@ function DialogBayar({
   if (struk) {
     return (
       <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 p-4">
-        <div className="w-full max-w-sm rounded-2xl bg-white p-5 text-center">
-          <p className="text-emerald-600">
+        <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-xl">
+          <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-100 text-emerald-700">
+            <Ikon nama="centang" className="h-7 w-7" />
+          </span>
+          <p className="mt-3 font-semibold text-emerald-700">
             {struk.offline
               ? "Tersimpan di HP"
               : metode === "kasbon"
@@ -697,9 +742,12 @@ function DialogBayar({
           </p>
           <p className="mt-2 text-sm text-zinc-500">{struk.noTransaksi}</p>
           {struk.offline && (
-            <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
-              Tidak ada sinyal. Transaksi tersimpan di HP dan akan terkirim otomatis — tercatat
-              tepat sekali saat kembali online.
+            <p className="mt-3 flex items-start gap-2 rounded-lg bg-amber-50 px-3 py-2 text-left text-sm text-amber-800">
+              <Ikon nama="peringatan" className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                Tidak ada sinyal. Transaksi tersimpan di HP dan akan terkirim otomatis — tercatat
+                tepat sekali saat kembali online.
+              </span>
             </p>
           )}
           <p className="mt-4 text-sm text-zinc-500">Total</p>
@@ -717,8 +765,9 @@ function DialogBayar({
           <button
             type="button"
             onClick={onSukses}
-            className="mt-5 min-h-12 w-full rounded-xl bg-emerald-600 font-semibold text-white"
+            className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
           >
+            <Ikon nama="tambah" className="h-4 w-4" />
             Transaksi Baru
           </button>
         </div>
@@ -728,38 +777,46 @@ function DialogBayar({
 
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-2xl bg-white p-5">
-        <h2 className="text-lg font-bold">Pembayaran</h2>
+      <div className="max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+        <h2 className="flex items-center gap-2 text-lg font-bold">
+          <Ikon nama="keuangan" className="h-5 w-5" />
+          Pembayaran
+        </h2>
         <p className="mt-1 text-sm text-zinc-500">Total: {rupiah.format(total)}</p>
 
         <div className="mt-3 grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => setMetode("tunai")}
-            className={`min-h-11 rounded-xl border text-sm font-medium ${
+            className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border text-sm font-semibold transition-colors ${
               metode === "tunai"
                 ? "border-emerald-600 bg-emerald-600 text-white"
-                : "border-zinc-300 bg-white text-zinc-700"
+                : "border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-100"
             }`}
           >
+            <Ikon nama="keuangan" className="h-4 w-4" />
             Tunai
           </button>
           <button
             type="button"
             onClick={() => setMetode("kasbon")}
-            className={`min-h-11 rounded-xl border text-sm font-medium ${
+            className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border text-sm font-semibold transition-colors ${
               metode === "kasbon"
                 ? "border-emerald-600 bg-emerald-600 text-white"
-                : "border-zinc-300 bg-white text-zinc-700"
+                : "border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-100"
             }`}
           >
+            <Ikon nama="kasbon" className="h-4 w-4" />
             Kasbon
           </button>
         </div>
 
         {adaStokKurang && (
-          <div className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-            <p className="font-medium">Stok kurang dari yang dicatat:</p>
+          <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+            <p className="flex items-center gap-2 font-semibold">
+              <Ikon nama="peringatan" className="h-4 w-4 shrink-0" />
+              Stok kurang dari yang dicatat:
+            </p>
             <ul className="mt-1 list-disc pl-5">
               {itemKurang.map((i) => (
                 <li key={i.kunci}>
@@ -772,8 +829,9 @@ function DialogBayar({
               <button
                 type="button"
                 onClick={() => setLanjutStokKurang(true)}
-                className="mt-2 min-h-10 w-full rounded-lg border border-amber-600 font-medium text-amber-800"
+                className="mt-2 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-amber-600 bg-white px-3 text-sm font-semibold text-amber-800 transition-colors hover:bg-amber-100"
               >
+                <Ikon nama="centang" className="h-4 w-4" />
                 Ya, lanjutkan walau stok kurang
               </button>
             )}
@@ -782,14 +840,14 @@ function DialogBayar({
 
         {metode === "tunai" ? (
           <>
-            <label className="mt-4 block text-sm font-medium">Uang diterima (Rp)</label>
+            <label className="mt-4 block text-sm font-medium text-zinc-700">Uang diterima (Rp)</label>
             <input
               type="number"
               inputMode="numeric"
               min={0}
               value={dibayar}
               onChange={(e) => setDibayar(e.target.value)}
-              className="mt-1 min-h-12 w-full rounded-xl border border-zinc-300 px-3 text-lg"
+              className="mt-1 min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-lg text-zinc-900"
             />
 
             <p className="mt-3 text-sm text-zinc-500">Kembalian</p>
@@ -797,11 +855,11 @@ function DialogBayar({
           </>
         ) : (
           <>
-            <label className="mt-4 block text-sm font-medium">Pelanggan (wajib)</label>
+            <label className="mt-4 block text-sm font-medium text-zinc-700">Pelanggan (wajib)</label>
             <select
               value={idPelanggan}
               onChange={(e) => setIdPelanggan(e.target.value ? Number(e.target.value) : "")}
-              className="mt-1 min-h-12 w-full rounded-xl border border-zinc-300 bg-white px-3"
+              className="mt-1 min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
             >
               <option value="">— pilih pelanggan —</option>
               {pelanggan.map((p) => (
@@ -816,36 +874,37 @@ function DialogBayar({
               <button
                 type="button"
                 onClick={() => setBukaPelangganBaru(true)}
-                className="mt-2 min-h-10 rounded-lg border border-emerald-600 px-3 text-sm font-medium text-emerald-700"
+                className="mt-2 inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
               >
+                <Ikon nama="akun" className="h-4 w-4" />
                 + Pelanggan baru
               </button>
             ) : (
-              <div className="mt-2 flex flex-col gap-2 rounded-lg bg-zinc-50 p-3">
+              <div className="mt-2 flex flex-col gap-2 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
                 <input
                   value={namaBaru}
                   onChange={(e) => setNamaBaru(e.target.value)}
                   placeholder="Nama pelanggan"
-                  className="min-h-11 rounded-lg border border-zinc-300 px-3"
+                  className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
                 />
                 <input
                   value={hpBaru}
                   onChange={(e) => setHpBaru(e.target.value)}
                   placeholder="No. HP (opsional)"
-                  className="min-h-11 rounded-lg border border-zinc-300 px-3"
+                  className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
                 />
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setBukaPelangganBaru(false)}
-                    className="min-h-10 flex-1 rounded-lg border border-zinc-300 text-sm font-medium"
+                    className="inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
                   >
                     Batal
                   </button>
                   <button
                     type="button"
                     onClick={() => void tambahPelanggan()}
-                    className="min-h-10 flex-1 rounded-lg bg-emerald-600 text-sm font-semibold text-white"
+                    className="inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
                   >
                     Simpan Pelanggan
                   </button>
@@ -853,24 +912,30 @@ function DialogBayar({
               </div>
             )}
 
-            <label className="mt-4 block text-sm font-medium">Jatuh tempo (wajib)</label>
+            <label className="mt-4 block text-sm font-medium text-zinc-700">Jatuh tempo (wajib)</label>
             <input
               type="date"
               value={jatuhTempo}
               onChange={(e) => setJatuhTempo(e.target.value)}
-              className="mt-1 min-h-12 w-full rounded-xl border border-zinc-300 px-3"
+              className="mt-1 min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
             />
           </>
         )}
 
-        {galat && <p className="mt-3 text-sm text-red-700">{galat}</p>}
+        {galat && (
+          <p className="mt-3 flex items-center gap-2 text-sm font-medium text-red-700">
+            <Ikon nama="peringatan" className="h-4 w-4 shrink-0" />
+            {galat}
+          </p>
+        )}
 
         <div className="mt-5 flex gap-2">
           <button
             type="button"
             onClick={onTutup}
-            className="min-h-12 flex-1 rounded-xl border border-zinc-300 font-medium"
+            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
           >
+            <Ikon nama="tutup" className="h-4 w-4" />
             Batal
           </button>
           <button
@@ -881,8 +946,9 @@ function DialogBayar({
               (metode === "tunai" && dibayar === "") ||
               (adaStokKurang && !lanjutStokKurang)
             }
-            className="min-h-12 flex-1 rounded-xl bg-emerald-600 font-semibold text-white disabled:opacity-50"
+            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
           >
+            <Ikon nama="centang" className="h-4 w-4" />
             {memuat ? "Menyimpan…" : "Simpan"}
           </button>
         </div>

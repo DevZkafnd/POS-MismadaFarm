@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Ikon from "@/components/Ikon";
 import { PERAN, type NamaPeran } from "@/lib/auth/peran";
 
 type Barang = {
@@ -68,65 +69,72 @@ export default function HalamanBarang() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold">Data Barang</h1>
+      <h1 className="flex items-center gap-2 text-xl font-bold">
+        <Ikon nama="barang" className="h-6 w-6" />
+        Data Barang
+      </h1>
 
       <input
         type="search"
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="Cari nama atau barcode…"
-        className="min-h-12 w-full rounded-xl border border-zinc-300 bg-white px-4 text-base"
+        className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
       />
 
       {galat && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{galat}</p>
+        <p className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          <Ikon nama="peringatan" className="h-4 w-4 shrink-0" />
+          {galat}
+        </p>
       )}
 
       <p className="text-sm text-zinc-500">
         {memuat ? "Memuat…" : `${barang.length} barang ditemukan`}
       </p>
 
-      <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white">
+      <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm">
         <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="bg-zinc-100 text-zinc-600">
+          <thead className="bg-emerald-50 text-emerald-900">
             <tr>
-              <th className="px-3 py-2 font-medium">Nama</th>
-              <th className="px-3 py-2 font-medium">Lini</th>
-              <th className="px-3 py-2 font-medium">Stok</th>
-              <th className="px-3 py-2 font-medium">Harga Jual</th>
-              <th className="px-3 py-2 font-medium">Harga Beli</th>
-              {bolehUbahHarga && <th className="px-3 py-2 font-medium">Aksi</th>}
+              <th className="px-3 py-3 font-semibold">Nama</th>
+              <th className="px-3 py-3 font-semibold">Lini</th>
+              <th className="px-3 py-3 font-semibold">Stok</th>
+              <th className="px-3 py-3 font-semibold">Harga Jual</th>
+              <th className="px-3 py-3 font-semibold">Harga Beli</th>
+              {bolehUbahHarga && <th className="px-3 py-3 font-semibold">Aksi</th>}
             </tr>
           </thead>
           <tbody>
             {barang.map((b) => (
               <tr key={b.idBarang} className="border-t border-zinc-100">
-                <td className="px-3 py-2">
-                  <span className="font-medium">{b.namaBarang}</span>
+                <td className="px-3 py-3">
+                  <span className="font-medium text-zinc-900">{b.namaBarang}</span>
                   {b.tipe === "jasa" && (
-                    <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-700">
+                    <span className="ml-2 inline-block rounded-full bg-amber-100 px-2.5 py-0.5 align-middle text-xs font-medium text-amber-900">
                       jasa
                     </span>
                   )}
                   {b.kodeBarcode && (
-                    <span className="block text-xs text-zinc-400">{b.kodeBarcode}</span>
+                    <span className="block text-xs text-zinc-500">{b.kodeBarcode}</span>
                   )}
                 </td>
-                <td className="px-3 py-2 text-zinc-600">{b.namaLini}</td>
-                <td className="px-3 py-2">
+                <td className="px-3 py-3 text-zinc-600">{b.namaLini}</td>
+                <td className="px-3 py-3">
                   {b.tipe === "jasa" ? "—" : `${b.stokTotal} ${b.satuan}`}
                 </td>
-                <td className="px-3 py-2">{rupiah.format(b.hargaJualAktif)}</td>
-                <td className="px-3 py-2 text-zinc-600">
+                <td className="px-3 py-3 font-medium">{rupiah.format(b.hargaJualAktif)}</td>
+                <td className="px-3 py-3 text-zinc-600">
                   {b.hargaBeliTerakhir === null ? "—" : rupiah.format(b.hargaBeliTerakhir)}
                 </td>
                 {bolehUbahHarga && (
-                  <td className="px-3 py-2">
+                  <td className="px-3 py-3">
                     <button
                       type="button"
                       onClick={() => setDiubah(b)}
-                      className="min-h-9 rounded-lg border border-emerald-600 px-3 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+                      className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
                     >
+                      <Ikon nama="barang" className="h-4 w-4" />
                       Ubah Harga
                     </button>
                   </td>
@@ -135,7 +143,7 @@ export default function HalamanBarang() {
             ))}
             {barang.length === 0 && !memuat && (
               <tr>
-                <td colSpan={bolehUbahHarga ? 6 : 5} className="px-3 py-6 text-center text-zinc-500">
+                <td colSpan={bolehUbahHarga ? 6 : 5} className="px-3 py-8 text-center text-zinc-500">
                   Tidak ada barang.
                 </td>
               </tr>
@@ -201,46 +209,56 @@ function DialogUbahHarga({
 
   return (
     <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-5">
-        <h2 className="text-lg font-bold">Ubah Harga</h2>
+      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+        <h2 className="flex items-center gap-2 text-lg font-bold">
+          <Ikon nama="barang" className="h-5 w-5" />
+          Ubah Harga
+        </h2>
         <p className="mt-1 text-sm text-zinc-500">{barang.namaBarang}</p>
 
-        <label className="mt-4 block text-sm font-medium">Harga Jual (Rp)</label>
+        <label className="mt-4 block text-sm font-medium text-zinc-700">Harga Jual (Rp)</label>
         <input
           type="number"
           inputMode="numeric"
           min={0}
           value={hargaJual}
           onChange={(e) => setHargaJual(e.target.value)}
-          className="mt-1 min-h-12 w-full rounded-xl border border-zinc-300 px-3 text-base"
+          className="mt-1 min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
         />
 
-        <label className="mt-3 block text-sm font-medium">Harga Beli (Rp)</label>
+        <label className="mt-3 block text-sm font-medium text-zinc-700">Harga Beli (Rp)</label>
         <input
           type="number"
           inputMode="numeric"
           min={0}
           value={hargaBeli}
           onChange={(e) => setHargaBeli(e.target.value)}
-          className="mt-1 min-h-12 w-full rounded-xl border border-zinc-300 px-3 text-base"
+          className="mt-1 min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900"
         />
 
-        {galat && <p className="mt-3 text-sm text-red-700">{galat}</p>}
+        {galat && (
+          <p className="mt-3 flex items-center gap-2 text-sm font-medium text-red-700">
+            <Ikon nama="peringatan" className="h-4 w-4 shrink-0" />
+            {galat}
+          </p>
+        )}
 
         <div className="mt-5 flex gap-2">
           <button
             type="button"
             onClick={onTutup}
-            className="min-h-12 flex-1 rounded-xl border border-zinc-300 font-medium"
+            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100"
           >
+            <Ikon nama="tutup" className="h-4 w-4" />
             Batal
           </button>
           <button
             type="button"
             onClick={simpan}
             disabled={memuat}
-            className="min-h-12 flex-1 rounded-xl bg-emerald-600 font-semibold text-white disabled:opacity-50"
+            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
           >
+            <Ikon nama="centang" className="h-4 w-4" />
             {memuat ? "Menyimpan…" : "Simpan"}
           </button>
         </div>

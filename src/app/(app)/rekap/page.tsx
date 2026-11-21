@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Ikon from "@/components/Ikon";
 
 /**
  * Rekap harian + pembanding kas (F11 / FR-13, BR-09).
@@ -37,7 +38,10 @@ export default function HalamanRekap() {
   const [versi, setVersi] = useState(0);
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold">Rekap Kas Harian</h1>
+      <div className="flex items-center gap-2">
+        <Ikon nama="rekap" className="h-6 w-6 text-emerald-700" />
+        <h1 className="text-xl font-bold">Rekap Kas Harian</h1>
+      </div>
       <FormRekap key={versi} onSukses={() => setVersi((v) => v + 1)} />
     </div>
   );
@@ -158,13 +162,14 @@ function FormRekap({ onSukses }: { onSukses: () => void }) {
       </p>
 
       {terkunci && (
-        <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <p className="flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-2 text-sm font-medium text-amber-900">
+          <Ikon nama="peringatan" className="h-4 w-4 shrink-0" />
           Rekap hari ini sudah dikunci dan tidak bisa diubah.
         </p>
       )}
 
-      <section className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4">
-        <label className="text-sm font-medium">Kas awal (Rp)</label>
+      <section className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <label className="text-sm font-medium text-zinc-700">Kas awal (Rp)</label>
         <input
           type="number"
           inputMode="numeric"
@@ -172,12 +177,12 @@ function FormRekap({ onSukses }: { onSukses: () => void }) {
           value={kasAwal}
           onChange={(e) => setKasAwal(e.target.value)}
           disabled={terkunci}
-          className="min-h-12 rounded-xl border border-zinc-300 px-3 disabled:bg-zinc-100"
+          className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900 disabled:bg-zinc-100"
         />
 
         <div className="flex flex-col gap-1 rounded-lg bg-zinc-50 p-3 text-sm">
           {barisKomponen.map((b) => (
-            <div key={b.label} className="flex justify-between">
+            <div key={b.label} className="flex justify-between gap-2">
               <span className="text-zinc-600">
                 {b.tanda === "kurang" ? "− " : "+ "}
                 {b.label}
@@ -191,7 +196,7 @@ function FormRekap({ onSukses }: { onSukses: () => void }) {
           </div>
         </div>
 
-        <label className="text-sm font-medium">Uang fisik dihitung (Rp)</label>
+        <label className="text-sm font-medium text-zinc-700">Uang fisik dihitung (Rp)</label>
         <input
           type="number"
           inputMode="numeric"
@@ -199,19 +204,19 @@ function FormRekap({ onSukses }: { onSukses: () => void }) {
           value={kasFisik}
           onChange={(e) => setKasFisik(e.target.value)}
           disabled={terkunci}
-          className="min-h-12 rounded-xl border border-zinc-300 px-3 disabled:bg-zinc-100"
+          className="min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-zinc-900 disabled:bg-zinc-100"
         />
 
         <div
           className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold ${
-            selisih === 0 ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"
+            selisih === 0 ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"
           }`}
         >
           <span>Selisih</span>
           <span>{rupiah.format(selisih)}</span>
         </div>
 
-        <label className="text-sm font-medium">
+        <label className="text-sm font-medium text-zinc-700">
           Keterangan selisih{perluKeterangan ? " (wajib)" : " (opsional)"}
         </label>
         <textarea
@@ -220,28 +225,30 @@ function FormRekap({ onSukses }: { onSukses: () => void }) {
           disabled={terkunci}
           rows={2}
           placeholder="mis. uang kembalian belum dicatat"
-          className="rounded-xl border border-zinc-300 px-3 py-2 disabled:bg-zinc-100"
+          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 disabled:bg-zinc-100"
         />
 
         {galatForm && <p className="text-sm text-red-700">{galatForm}</p>}
         {pesan && <p className="text-sm text-emerald-700">{pesan}</p>}
 
         {!terkunci && (
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <button
               type="button"
               onClick={() => void kirim(false)}
               disabled={menyimpan}
-              className="min-h-12 flex-1 rounded-xl border border-emerald-600 font-medium text-emerald-700 disabled:opacity-50"
+              className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 disabled:opacity-50"
             >
+              <Ikon nama="centang" className="h-4 w-4" />
               Simpan
             </button>
             <button
               type="button"
               onClick={() => void kirim(true)}
               disabled={menyimpan}
-              className="min-h-12 flex-1 rounded-xl bg-emerald-600 font-semibold text-white disabled:opacity-50"
+              className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
             >
+              <Ikon nama="centang" className="h-4 w-4" />
               {menyimpan ? "Menyimpan…" : "Simpan & Kunci"}
             </button>
           </div>

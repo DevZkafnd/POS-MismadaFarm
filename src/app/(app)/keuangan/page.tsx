@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Ikon from "@/components/Ikon";
 
 /**
  * Halaman Keuangan (F14 pengeluaran + F18 hutang pemasok).
@@ -410,7 +411,10 @@ function DialogBayarHutang({
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 p-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-5">
-        <h2 className="text-lg font-bold">Bayar Hutang</h2>
+        <h2 className="flex items-center gap-2 text-lg font-bold">
+          <Ikon nama="kasbon" className="h-5 w-5 text-emerald-700" />
+          Bayar Hutang
+        </h2>
         <p className="mt-1 text-sm text-zinc-500">
           {hutang.namaPemasok} · sisa {rupiah.format(hutang.saldo)}
         </p>

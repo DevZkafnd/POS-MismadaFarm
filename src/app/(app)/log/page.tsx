@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Ikon from "@/components/Ikon";
 
 type Log = {
   idLog: number;
@@ -55,13 +56,16 @@ export default function HalamanLog() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold">Riwayat Aktivitas</h1>
+      <div className="flex items-center gap-2">
+        <Ikon nama="log" className="h-6 w-6 text-emerald-700" />
+        <h1 className="text-xl font-bold">Riwayat Aktivitas</h1>
+      </div>
 
       {galat && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{galat}</p>}
-      {memuat && <p className="text-zinc-500">Memuat…</p>}
+      {memuat && <p className="text-sm text-zinc-500">Memuat…</p>}
 
       {!memuat && !galat && (
-        <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white">
+        <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead className="bg-zinc-100 text-zinc-600">
               <tr>
