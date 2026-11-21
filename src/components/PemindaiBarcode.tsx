@@ -77,7 +77,11 @@ export default function PemindaiBarcode({
           );
 
           stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "environment" },
+            video: {
+              facingMode: "environment",
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            },
           });
           if (dibatalkan) return;
           video.srcObject = stream;
@@ -109,7 +113,11 @@ export default function PemindaiBarcode({
         const pembaca = new BrowserMultiFormatReader();
         
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" },
+          video: {
+            facingMode: "environment",
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
         });
         if (dibatalkan) return;
         video.srcObject = stream;
@@ -165,6 +173,7 @@ export default function PemindaiBarcode({
             className="h-full w-full object-cover"
             playsInline
             muted
+            autoPlay
             aria-label="Pratinjau kamera"
           />
           <div className="pointer-events-none absolute inset-x-8 top-1/2 h-0.5 -translate-y-1/2 bg-emerald-400/80" />

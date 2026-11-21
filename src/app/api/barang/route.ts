@@ -4,6 +4,7 @@ import { butuhSesi } from "@/lib/auth/rbac";
 import { PERAN } from "@/lib/auth/peran";
 import { barang, liniUsaha } from "@/lib/db/schema";
 import { butuhDb, responsGalat } from "@/lib/http";
+import { skemaBarangBaru, type MasukanBarangBaru } from "@/lib/validasi/barang";
 
 /**
  * GET /api/barang?q=&limit= — cari data master barang (F02 / FR-02).
@@ -70,6 +71,68 @@ export async function GET(req: NextRequest) {
         hargaBeliTerakhir: bolehLihatHargaBeli ? b.hargaBeliTerakhir : null,
       })),
     });
+  } catch (galat) {
+    return responsGalat(galat);
+  }
+}
+
+
+/**
+ * POST /api/barang — tambah barang baru (hanya Pemilik & Penerus Usaha).
+ */
+export async function POST(req: NextRequest) {
+  await connection();
+  try {
+    await butuhSesi();
+    const db = butuhDb();
+
+    const body = (await req.json()) as unknown;
+    const hasil = skemaBarangBaru.safeParse(body);
+    if (!hasil.success) {
+      return Response.json(
+        { pesan: "Data tidak valid", galat: hasil.error.issues },
+        { status: 400 },
+      );
+    }
+
+    const data: MasukanBarangBaru = hasil.data;
+
+    // Cek barcode duplikat jika diisi
+    if (data.kodeBarcode) {
+      const ada = await db
+        .select({ id: barang.idBarang })
+        .from(barang)
+        .where(eq(barang.kodeBarcode, data.kodeBarcode))
+        .limit(1);
+      if (ada.length > 0) {
+        return Response.json(
+          { pesan: `Barcode ${data.kodeBarcode} sudah dipakai barang lain.` },
+          { status: 409 },
+        );
+      }
+    }
+
+    const [barangBaru] = await db
+      .insert(barang)
+      .values({
+        kodeBarcode: data.kodeBarcode ?? null,
+        namaBarang: data.namaBarang,
+        idLini: data.idLini,
+        tipe: data.tipe,
+        satuan: data.satuan,
+        hargaJualAktif: data.hargaJualAktif,
+        hargaBeliTerakhir: data.hargaBeliTerakhir,
+        stokMinimum: String(data.stokMinimum),
+        favorit: data.favorit,
+        cepatRusak: data.cepatRusak,
+      })
+      .returning({
+        idBarang: barang.idBarang,
+        kodeBarcode: barang.kodeBarcode,
+        namaBarang: barang.namaBarang,
+      });
+
+    return Response.json({ barang: barangBaru }, { status: 201 });
   } catch (galat) {
     return responsGalat(galat);
   }
