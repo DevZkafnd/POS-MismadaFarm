@@ -1,0 +1,8 @@
+.env.local
+.env
+.uji/
+cookies.txt
+.neon
+node_modules
+.next
+.vscode
